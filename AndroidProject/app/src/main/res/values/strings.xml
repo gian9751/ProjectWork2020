@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">AndroidProject</string>
+    <string name="app_name">Ocean Movie</string>
+    <string name="title_placeholder">Title</string>
 </resources>
