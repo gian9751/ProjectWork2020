@@ -34,7 +34,7 @@
             android:fontFamily="sans-serif-medium"
             android:maxLines="1"
             android:padding="16dp"
-            android:textColor=""
+            android:textColor="@color/colorPrimaryDark"
             android:textSize="16dp" />
     </LinearLayout>
 
