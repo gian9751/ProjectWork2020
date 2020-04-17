@@ -67,7 +67,7 @@ public class Home extends AppCompatActivity implements IWebService {
                     }
                     //Toast.makeText(Home.this,"Ho preso i film vecchio", Toast.LENGTH_SHORT).show();
                 }else{
-                    Toast.makeText(Home.this,"Qualcosa è andato storto"+ errorMessage, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Home.this,"Qualcosa è andato storto: "+ errorMessage, Toast.LENGTH_SHORT).show();
                     Log.d("errore: ", errorMessage + "codice errore: "+ errorCode);
                 }
             }
