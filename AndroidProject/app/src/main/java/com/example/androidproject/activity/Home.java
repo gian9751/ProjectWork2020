@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.androidproject.R;
@@ -24,9 +25,8 @@ public class Home extends AppCompatActivity implements IWebService {
     ArrayList<Movie> mMovies;
     ArrayList<String> mMovieImmagini;
 
-    RecyclerView mRecyclerView;
-    RecyclerView.Adapter mAdapter;
-    RecyclerView.LayoutManager mLayoutManager;
+    ListView mListView;
+    MovieAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,12 +40,9 @@ public class Home extends AppCompatActivity implements IWebService {
         mMovieImmagini = new ArrayList<String>();
         mMovies = new ArrayList<Movie>();
 
-        mRecyclerView = findViewById(R.id.movieRecyclerView);
-        mLayoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-
-        mAdapter = new MovieAdapter(mMovieImmagini,Home.this);
-        mRecyclerView.setAdapter(mAdapter);
+        mListView = findViewById(R.id.listView);
+        mAdapter = new MovieAdapter(Home.this,mMovieImmagini);
+        mListView.setAdapter(mAdapter);
     }
 
     @Override

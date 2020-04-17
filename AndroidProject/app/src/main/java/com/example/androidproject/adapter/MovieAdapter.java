@@ -1,10 +1,12 @@
 package com.example.androidproject.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -12,58 +14,40 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.androidproject.R;
+import com.example.androidproject.activity.MovieDetail;
 
 import java.util.ArrayList;
 
-public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
+public class MovieAdapter extends ArrayAdapter<String> {
 
-    public ArrayList<String> mDataSet;
-    public Context mContext;
+    ArrayList<String> mMovie;
+    Context mContext;
+    LayoutInflater mInflater;
 
-    public MovieAdapter(ArrayList<String> mDataSet, Context mContext) {
-        this.mDataSet = mDataSet;
-        this.mContext = mContext;
+    public MovieAdapter(Context context, ArrayList<String> movie) {
+        super(context, R.layout.item_movie, movie);
+
+        mMovie = movie;
+        mContext = context;
+
+        mInflater = LayoutInflater.from(context);
     }
-
 
     @NonNull
     @Override
-    public MovieAdapter.MovieViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View vView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_movie, parent, false);
-        MovieViewHolder vHolder = new MovieViewHolder(vView);
-        return vHolder;
-    }
+    public View getView(int position, View convertView, ViewGroup parent) {
 
-    @Override
-    public void onBindViewHolder(@NonNull final MovieAdapter.MovieViewHolder holder, int position) {
+        if (convertView == null){
+            convertView = mInflater.inflate(R.layout.item_movie,parent,false);
+        }
+
+        ImageView vImageView = convertView.findViewById(R.id.imageView);
 
         Glide
                 .with(mContext)
-                .load(mDataSet.get(position))
-                .into(holder.mImageView);
+                .load(mMovie.get(position))
+                .into(vImageView);
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //
-            }
-        });
-    }
-
-    @Override
-    public int getItemCount() {
-        return mDataSet.size();
-    }
-
-    public class MovieViewHolder extends RecyclerView.ViewHolder{
-
-        ImageView mImageView;
-
-        public MovieViewHolder(@NonNull View itemView) {
-            super(itemView);
-
-            mImageView = itemView.findViewById(R.id.imageView);
-
-        }
+        return convertView;
     }
 }
