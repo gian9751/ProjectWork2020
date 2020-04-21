@@ -1,4 +1,4 @@
-package com.example.androidproject.favouritesmovies;
+package com.example.androidproject.localdata;
 
 import android.provider.BaseColumns;
 

@@ -1,4 +1,4 @@
-package com.example.androidproject.movie;
+package com.example.androidproject.localdata;
 
 import android.provider.BaseColumns;
 
