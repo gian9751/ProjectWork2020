@@ -6,8 +6,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -26,12 +24,9 @@ import com.example.androidproject.data.services.WebService;
 import com.example.androidproject.localdata.MovieTableHelper;
 import com.example.androidproject.localdata.Provider;
 
-import java.util.ArrayList;
-
 public class Home extends AppCompatActivity implements IWebService, LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int MY_LOADER_ID = 0;
-    private static final String ID = "ID" ;
 
     private WebService mWebService;
 
