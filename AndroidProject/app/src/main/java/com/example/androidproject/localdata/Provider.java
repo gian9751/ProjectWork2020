@@ -14,7 +14,7 @@ import androidx.annotation.Nullable;
 
 public class Provider extends ContentProvider {
 
-    public static final String AUTORITY = "com.example.androidproject.movie.Provider";
+    public static final String AUTORITY = "com.example.androidproject.localdata.Provider";
 
     public static final String BASE_PATH_MOVIES = "movies";
     public static final String BASE_PATH_FAVOURITES = "favourites";
@@ -27,7 +27,7 @@ public class Provider extends ContentProvider {
     public static final String MIME_TYPE_MOVIES = ContentResolver.CURSOR_DIR_BASE_TYPE+"vnd.all_movies";
     public static final String MIME_TYPE_MOVIE = ContentResolver.CURSOR_ITEM_BASE_TYPE+"vnd.single_movie";
     public static final String MIME_TYPE_FAVOURITES = ContentResolver.CURSOR_DIR_BASE_TYPE+"vnd.all_favourites";
-    public static final String MIME_TYPE_FAVOURITE = ContentResolver.CURSOR_ITEM_BASE_TYPE+"vnd.single_movie";
+    public static final String MIME_TYPE_FAVOURITE = ContentResolver.CURSOR_ITEM_BASE_TYPE+"vnd.single_favourite";
 
     public static Uri MOVIES_URI = Uri.parse(ContentResolver.SCHEME_CONTENT+"://"+AUTORITY+"/"+BASE_PATH_MOVIES);
     public static Uri FAVOURITES_URI = Uri.parse(ContentResolver.SCHEME_CONTENT+"://"+AUTORITY+"/"+BASE_PATH_FAVOURITES);
@@ -189,8 +189,5 @@ public class Provider extends ContentProvider {
         int vUpdatedRows = vDb.update(vTableName, values, vQuery, selectionArgs);
         getContext().getContentResolver().notifyChange(uri, null);
         return vUpdatedRows;
-    }
-
-    public static class FavouritesAdapter {
     }
 }

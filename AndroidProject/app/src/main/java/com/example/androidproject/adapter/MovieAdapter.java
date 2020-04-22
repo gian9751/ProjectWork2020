@@ -2,6 +2,7 @@ package com.example.androidproject.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.cursoradapter.widget.CursorAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -18,36 +20,56 @@ import com.example.androidproject.activity.MovieDetail;
 
 import java.util.ArrayList;
 
-public class MovieAdapter extends ArrayAdapter<String> {
+public class MovieAdapter extends CursorAdapter {
 
-    ArrayList<String> mMovie;
-    Context mContext;
-    LayoutInflater mInflater;
-
-    public MovieAdapter(Context context, ArrayList<String> movie) {
-        super(context, R.layout.item_movie, movie);
-
-        mMovie = movie;
-        mContext = context;
-
-        mInflater = LayoutInflater.from(context);
+    public MovieAdapter(Context context, Cursor c) {
+        super(context, c);
     }
 
-    @NonNull
+
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View newView(Context context, Cursor cursor, ViewGroup viewGroup) {
+        LayoutInflater vInflater = LayoutInflater.from(context);
+        View vView = vInflater.inflate(R.layout.item_movie,viewGroup,false);
 
-        if (convertView == null){
-            convertView = mInflater.inflate(R.layout.item_movie,parent,false);
-        }
+        return  vView;
+    }
 
-        ImageView vImageView = convertView.findViewById(R.id.imageView);
+    @Override
+    public void bindView(View view, Context context, Cursor cursor) {
+
+        ImageView vImmagine1 = view.findViewById(R.id.imageViewColumn1);
+        ImageView vImmagine2 = view.findViewById(R.id.imageViewColumn2);
+
+        int position = cursor.getPosition() * 2;
+
+        if (position >= cursor.getCount())
+            return;
+
+        cursor.moveToPosition(position);
 
         Glide
-                .with(mContext)
-                .load(mMovie.get(position))
-                .into(vImageView);
+                .with(context)
+                .load(cursor.getString(cursor.getColumnIndex("immagine")))
+                .into(vImmagine1);
 
-        return convertView;
+        if (position + 1 >= cursor.getCount())
+            return;
+
+        cursor.moveToPosition(position + 1);
+
+        Glide
+                .with(context)
+                .load(cursor.getString(cursor.getColumnIndex("immagine")))
+                .into(vImmagine2);
+
+    }
+
+    @Override
+    public int getCount() {
+        if (getCursor()!=null)
+            return (getCursor().getCount()%2==0)?getCursor().getCount()/2:getCursor().getCount()/2+1;
+        else
+            return 0;
     }
 }
