@@ -42,6 +42,8 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
 
         mWebService = WebService.getInstance();
 
+        loadMovie();
+
         mListView = findViewById(R.id.listView);
         mAdapter = new MovieAdapter(Home.this,null);
         mListView.setAdapter(mAdapter);
@@ -53,7 +55,7 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
     protected void onResume() {
         super.onResume();
 
-        loadMovie();
+
     }
 
     private void loadMovie() {
@@ -69,8 +71,11 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
                         vValues.put(MovieTableHelper.POSTER_PATH, "https://image.tmdb.org/t/p/w500" + movie.getPosterPath());
                         vValues.put(MovieTableHelper.BACKDROP_PATH,"https://image.tmdb.org/t/p/w500" + movie.getBackdropPath());
 
+                        Log.d("asda", "insert" +  movie.getId());
+
                         Uri vResultUri = getContentResolver().insert(Provider.MOVIES_URI, vValues);
-                        Log.d("asda", "insert" + vResultUri);
+                        Log.d("asda", "insert" +  vResultUri);
+
                     }
                 }else{
                     Toast.makeText(Home.this,"Caricamento dei film non riuscito: "+ errorMessage, Toast.LENGTH_SHORT).show();

@@ -17,6 +17,7 @@ import androidx.cursoradapter.widget.CursorAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.androidproject.R;
 import com.example.androidproject.activity.MovieDetail;
 import com.example.androidproject.data.models.Movie;
@@ -24,9 +25,11 @@ import com.example.androidproject.localdata.MovieTableHelper;
 
 import java.util.ArrayList;
 
+import static android.os.Build.ID;
+
 public class MovieAdapter extends CursorAdapter {
 
-    private static final String ID = "ID" ;
+    RequestOptions mRequestOptions ;
 
     public MovieAdapter(Context context, Cursor c) {
         super(context, c);
@@ -46,26 +49,30 @@ public class MovieAdapter extends CursorAdapter {
         ImageView vImmagine1 = view.findViewById(R.id.imageViewColumn1);
         ImageView vImmagine2 = view.findViewById(R.id.imageViewColumn2);
 
-        int position = cursor.getPosition() * 2;
+        final int position = cursor.getPosition() * 2;
 
         if (position >= cursor.getCount())
             return;
 
         cursor.moveToPosition(position);
 
+        mRequestOptions = new RequestOptions();
+        mRequestOptions.placeholder(R.drawable.ic_movie_placeholder);
+
         Glide
                 .with(context)
+                .setDefaultRequestOptions(mRequestOptions)
                 .load(cursor.getString(cursor.getColumnIndex(MovieTableHelper.POSTER_PATH)))
                 .into(vImmagine1);
 
         vImmagine1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Toast.makeText(context,"hai premuto immagine 1",Toast.LENGTH_SHORT).show();
-                Intent vI = new Intent(context,MovieDetail.class);
+                cursor.moveToPosition(position);
+                 Intent vI = new Intent(context,MovieDetail.class);
                 Bundle vBundle = new Bundle();
-                vBundle.putLong(ID, cursor.getLong(cursor.getColumnIndex(MovieTableHelper._ID)));
-                vI.putExtra("BUNDLE_ID", vBundle);
+                vBundle.putLong(ID, getCursor().getLong(cursor.getColumnIndex(MovieTableHelper._ID)));
+                vI.putExtras(vBundle);
                 context.startActivity(vI);
             }
         });
@@ -77,17 +84,18 @@ public class MovieAdapter extends CursorAdapter {
 
         Glide
                 .with(context)
+                .setDefaultRequestOptions(mRequestOptions)
                 .load(cursor.getString(cursor.getColumnIndex(MovieTableHelper.POSTER_PATH)))
                 .into(vImmagine2);
 
         vImmagine2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Toast.makeText(context,"hai premuto immagine 2",Toast.LENGTH_SHORT).show();
+                cursor.moveToPosition(position + 1);
                 Intent vI = new Intent(context,MovieDetail.class);
                 Bundle vBundle = new Bundle();
                 vBundle.putLong(ID, cursor.getLong(cursor.getColumnIndex(MovieTableHelper._ID)));
-                vI.putExtra("BUNDLE_ID", vBundle);
+                vI.putExtras(vBundle);
                 context.startActivity(vI);
             }
         });
