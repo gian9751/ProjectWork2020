@@ -20,6 +20,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <provider
+        android:name=".localdata.Provider"
+        android:authorities="com.example.androidproject.localdata.Provider"
+        android:exported="true" />
     </application>
+
+
 
 </manifest>

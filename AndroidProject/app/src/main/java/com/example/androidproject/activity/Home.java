@@ -1,9 +1,17 @@
 package com.example.androidproject.activity;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.CursorLoader;
+import androidx.loader.content.Loader;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ListView;
@@ -15,15 +23,17 @@ import com.example.androidproject.data.models.DiscoverMovieResponse;
 import com.example.androidproject.data.models.Movie;
 import com.example.androidproject.data.services.IWebService;
 import com.example.androidproject.data.services.WebService;
+import com.example.androidproject.localdata.MovieTableHelper;
+import com.example.androidproject.localdata.Provider;
 
 import java.util.ArrayList;
 
-public class Home extends AppCompatActivity implements IWebService {
+public class Home extends AppCompatActivity implements IWebService, LoaderManager.LoaderCallbacks<Cursor> {
+
+    private static final int MY_LOADER_ID = 0;
+    private static final String ID = "ID" ;
 
     private WebService mWebService;
-
-    ArrayList<Movie> mMovies;
-    ArrayList<String> mMovieImmagini;
 
     ListView mListView;
     MovieAdapter mAdapter;
@@ -37,12 +47,11 @@ public class Home extends AppCompatActivity implements IWebService {
 
         mWebService = WebService.getInstance();
 
-        mMovieImmagini = new ArrayList<String>();
-        mMovies = new ArrayList<Movie>();
-
         mListView = findViewById(R.id.listView);
-        mAdapter = new MovieAdapter(Home.this,mMovieImmagini);
+        mAdapter = new MovieAdapter(Home.this,null);
         mListView.setAdapter(mAdapter);
+
+        getSupportLoaderManager().initLoader(MY_LOADER_ID,null,this);
     }
 
     @Override
@@ -58,13 +67,18 @@ public class Home extends AppCompatActivity implements IWebService {
             public void onDiscoverMovieFetched(boolean success, DiscoverMovieResponse response, int errorCode, String errorMessage) {
                 if (success){
                     for (Movie movie : response.getResults()) {
-                        mMovies.add(movie);
-                        mMovieImmagini.add("https://image.tmdb.org/t/p/w500" + movie.getPosterPath());
-                        mAdapter.notifyDataSetChanged();
+                        ContentValues vValues = new ContentValues();
+                        vValues.put(MovieTableHelper._ID, movie.getId());
+                        vValues.put(MovieTableHelper.TITLE, movie.getTitle());
+                        vValues.put(MovieTableHelper.PLOT, movie.getOverview());
+                        vValues.put(MovieTableHelper.POSTER_PATH, "https://image.tmdb.org/t/p/w500" + movie.getPosterPath());
+                        vValues.put(MovieTableHelper.BACKDROP_PATH,"https://image.tmdb.org/t/p/w500" + movie.getBackdropPath());
+
+                        Uri vResultUri = getContentResolver().insert(Provider.MOVIES_URI, vValues);
+                        Log.d("asda", "insert" + vResultUri);
                     }
-                    //Toast.makeText(Home.this,"Ho preso i film vecchio", Toast.LENGTH_SHORT).show();
                 }else{
-                    Toast.makeText(Home.this,"Qualcosa è andato storto: "+ errorMessage, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Home.this,"Caricamento dei film non riuscito: "+ errorMessage, Toast.LENGTH_SHORT).show();
                     Log.d("errore: ", errorMessage + "codice errore: "+ errorCode);
                 }
             }
@@ -75,5 +89,21 @@ public class Home extends AppCompatActivity implements IWebService {
     @Override
     public void onDiscoverMovieFetched(boolean success, DiscoverMovieResponse response, int errorCode, String errorMessage) {
 
+    }
+
+    @NonNull
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
+        return new CursorLoader(this, Provider.MOVIES_URI,null,null,null,null);
+    }
+
+    @Override
+    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
+        mAdapter.changeCursor(data);
+    }
+
+    @Override
+    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
+        mAdapter.changeCursor(null);
     }
 }

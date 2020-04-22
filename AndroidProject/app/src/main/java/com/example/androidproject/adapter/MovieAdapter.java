@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.androidproject.R;
 import com.example.androidproject.activity.MovieDetail;
+import com.example.androidproject.localdata.MovieTableHelper;
 
 import java.util.ArrayList;
 
@@ -50,7 +51,7 @@ public class MovieAdapter extends CursorAdapter {
 
         Glide
                 .with(context)
-                .load(cursor.getString(cursor.getColumnIndex("immagine")))
+                .load(cursor.getString(cursor.getColumnIndex(MovieTableHelper.POSTER_PATH)))
                 .into(vImmagine1);
 
         if (position + 1 >= cursor.getCount())
@@ -60,7 +61,7 @@ public class MovieAdapter extends CursorAdapter {
 
         Glide
                 .with(context)
-                .load(cursor.getString(cursor.getColumnIndex("immagine")))
+                .load(cursor.getString(cursor.getColumnIndex(MovieTableHelper.POSTER_PATH)))
                 .into(vImmagine2);
 
     }
