@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,6 +17,7 @@ import com.example.androidproject.R;
 import com.example.androidproject.data.models.Movie;
 import com.example.androidproject.localdata.MovieTableHelper;
 import com.example.androidproject.localdata.Provider;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import static android.os.Build.ID;
 
@@ -27,7 +29,7 @@ public class MovieDetail extends AppCompatActivity {
 
     TextView mTextViewTitle, mTextVeiwPlot;
     ImageView mImageViewPoster, mImageViewCover;
-
+    FloatingActionButton mFabAddFavourite;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,7 +44,13 @@ public class MovieDetail extends AppCompatActivity {
         mImageViewPoster = findViewById(R.id.img_poster);
         mTextVeiwPlot = findViewById(R.id.text_plot);
         mTextViewTitle = findViewById(R.id.text_title);
-
+        mFabAddFavourite = findViewById(R.id.fab_add_favorite);
+        mFabAddFavourite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getBaseContext(), "Premuto tasto preferito", Toast.LENGTH_SHORT).show();
+            }
+        });
         if (getIntent().getExtras() != null)
             mId = getIntent().getExtras().getLong(ID);
 
