@@ -80,6 +80,7 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
                 }else{
                     Toast.makeText(Home.this,"Caricamento dei film non riuscito: "+ errorMessage, Toast.LENGTH_SHORT).show();
                     Log.d("errore: ", errorMessage + "codice errore: "+ errorCode);
+                    //setContentView(R.layout.activity_movie_detail);
                 }
             }
         });

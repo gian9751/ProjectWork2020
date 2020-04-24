@@ -56,14 +56,11 @@ public class MovieDetail extends AppCompatActivity {
 
                 Log.d("Cover", vImageCover);
 
-                if (!vImageCover.equals("https://image.tmdb.org/t/p/w500null")){
-                    Glide
-                            .with(MovieDetail.this)
-                            .setDefaultRequestOptions(mRequestOptions)
-                            .load(vImageCover)
-                            .into(mImageViewCover);
-                }else
-                    Toast.makeText(MovieDetail.this,"Anteprima cover non disponibile",Toast.LENGTH_LONG).show();
+                Glide
+                        .with(MovieDetail.this)
+                        .setDefaultRequestOptions(mRequestOptions)
+                        .load(vImageCover)
+                        .into(mImageViewCover);
 
 
                 Glide
