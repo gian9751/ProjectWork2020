@@ -33,9 +33,9 @@ public class DialogPreferiti extends DialogFragment implements LoaderManager.Loa
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
-        View vView = getActivity().getLayoutInflater().inflate(R.layout.fragment_layout);
+        View vView = getActivity().getLayoutInflater().inflate(R.layout.dialog_favorites_list, null);
 
-        ListView vListView = vView.findViewById(R.id.listPreferiti);
+        ListView vListView = vView.findViewById(R.id.favorite_list);
 
         mAdapter = new DialogAdapter(getActivity(),null);
         vListView.setAdapter(mAdapter);
@@ -46,13 +46,13 @@ public class DialogPreferiti extends DialogFragment implements LoaderManager.Loa
 
         vBuilder
                 .setTitle("Lista preferiti")
-                .setView(vView)
-                .setNeutralButton("Close",new DialogInterface.OnClickListener() {
+                .setNegativeButton("Close",new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         dismiss();
                     }
-                });
+                })
+                .setView(vView);
 
         return vBuilder.create();
 

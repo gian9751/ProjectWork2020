@@ -27,7 +27,7 @@ public class MovieDetail extends AppCompatActivity {
 
     RequestOptions mRequestOptions;
 
-    TextView mTextViewTitle, mTextVeiwPlot;
+    TextView mTextViewTitle, mTextViewPlot;
     ImageView mImageViewPoster, mImageViewCover;
     FloatingActionButton mFabAddFavourite;
     @Override
@@ -42,7 +42,7 @@ public class MovieDetail extends AppCompatActivity {
 
         mImageViewCover = findViewById(R.id.img_cover);
         mImageViewPoster = findViewById(R.id.img_poster);
-        mTextVeiwPlot = findViewById(R.id.text_plot);
+        mTextViewPlot = findViewById(R.id.text_plot);
         mTextViewTitle = findViewById(R.id.text_title);
         mFabAddFavourite = findViewById(R.id.fab_add_favorite);
         mFabAddFavourite.setOnClickListener(new View.OnClickListener() {
@@ -78,7 +78,7 @@ public class MovieDetail extends AppCompatActivity {
                         .into(mImageViewPoster);
 
                 mTextViewTitle.setText(vTitolo + "");
-                mTextVeiwPlot.setText(vPlot + "");
+                mTextViewPlot.setText(vPlot + "");
             }
 
         }else

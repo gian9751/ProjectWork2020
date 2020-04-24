@@ -22,6 +22,7 @@ import com.example.androidproject.data.models.DiscoverMovieResponse;
 import com.example.androidproject.data.models.Movie;
 import com.example.androidproject.data.services.IWebService;
 import com.example.androidproject.data.services.WebService;
+import com.example.androidproject.fragment.DialogPreferiti;
 import com.example.androidproject.localdata.MovieTableHelper;
 import com.example.androidproject.localdata.Provider;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -54,7 +55,8 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
         mFABFavorites.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getBaseContext(), "Premuto FAB lista preferiti", Toast.LENGTH_SHORT).show();
+                DialogPreferiti vDialogPreferiti = new DialogPreferiti();
+                vDialogPreferiti.show(getSupportFragmentManager(), null);
             }
         });
         getSupportLoaderManager().initLoader(MY_LOADER_ID,null,this);

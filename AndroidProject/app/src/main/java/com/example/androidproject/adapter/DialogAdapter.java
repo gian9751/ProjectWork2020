@@ -3,10 +3,12 @@ package com.example.androidproject.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.media.Image;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,7 +35,7 @@ public class DialogAdapter extends CursorAdapter {
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup viewGroup) {
         LayoutInflater vInflater = LayoutInflater.from(context);
-        View vView = vInflater.inflate(R.layout.cell_preferiti,viewGroup,false);
+        View vView = vInflater.inflate(R.layout.dialog_item_favorite,viewGroup,false);
 
         return  vView;
     }
@@ -42,10 +44,10 @@ public class DialogAdapter extends CursorAdapter {
     public void bindView(View view, final Context context, final Cursor cursor) {
 
         ConstraintLayout vLayoutMovie = view.findViewById(R.id.layoutMovie);
-        ImageView vImmagine = view.findViewById(R.id.imageViewPreferiti);
-        TextView vTitle = view.findViewById(R.id.titlePreferiti);
+        ImageView vImmagine = view.findViewById(R.id.poster_favorite_img);
+        TextView vTitle = view.findViewById(R.id.favorite_title_text);
 
-        ImageView vHeartPreferito = view.findViewById(R.id.heartPreferiti)
+        ImageButton vHeartPreferito = view.findViewById(R.id.favorite_button);
 
         mRequestOptions = new RequestOptions();
         mRequestOptions.placeholder(R.drawable.ic_movie_placeholder);
