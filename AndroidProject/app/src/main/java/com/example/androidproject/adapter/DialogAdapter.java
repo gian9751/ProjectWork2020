@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.media.Image;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +21,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.androidproject.R;
 import com.example.androidproject.activity.MovieDetail;
+import com.example.androidproject.localdata.FavouritesTableHelper;
 import com.example.androidproject.localdata.MovieTableHelper;
+import com.example.androidproject.localdata.Provider;
 
 import static android.os.Build.ID;
 
@@ -43,6 +46,9 @@ public class DialogAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, final Context context, final Cursor cursor) {
 
+        long vId = cursor.getLong(cursor.getColumnIndex(FavouritesTableHelper.MOVIE_ID));
+        Cursor vCursorMovie = context.getContentResolver().query(Uri.parse(Provider.MOVIES_URI+"/"+vId), null, null,null, null);
+
         ConstraintLayout vLayoutMovie = view.findViewById(R.id.layoutMovie);
         ImageView vImmagine = view.findViewById(R.id.poster_favorite_img);
         TextView vTitle = view.findViewById(R.id.favorite_title_text);
@@ -52,14 +58,15 @@ public class DialogAdapter extends CursorAdapter {
         mRequestOptions = new RequestOptions();
         mRequestOptions.placeholder(R.drawable.ic_movie_placeholder);
 
-        Glide
-                .with(context)
-                .setDefaultRequestOptions(mRequestOptions)
-                .load(cursor.getString(cursor.getColumnIndex(MovieTableHelper.POSTER_PATH)))
-                .into(vImmagine);
+        if (vCursorMovie.moveToNext()) {
+            Glide
+                    .with(context)
+                    .setDefaultRequestOptions(mRequestOptions)
+                    .load(vCursorMovie.getString(vCursorMovie.getColumnIndex(MovieTableHelper.POSTER_PATH)))
+                    .into(vImmagine);
 
-        vTitle.setText(cursor.getString(cursor.getColumnIndex(MovieTableHelper.TITLE)));
-
+            vTitle.setText(vCursorMovie.getString(vCursorMovie.getColumnIndex(MovieTableHelper.TITLE)));
+        }
         vLayoutMovie.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
