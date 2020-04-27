@@ -46,7 +46,7 @@ public class DialogPreferiti extends DialogFragment implements LoaderManager.Loa
         AlertDialog.Builder vBuilder = new AlertDialog.Builder(getContext());
 
         vBuilder
-                .setTitle("Lista preferiti")
+                .setTitle("Favorites List")
                 .setAdapter(mAdapter,null)
                 .setNegativeButton("Close",new DialogInterface.OnClickListener() {
                     @Override
