@@ -45,9 +45,9 @@ public class DialogAdapter extends CursorAdapter {
 
     @Override
     public void bindView(View view, final Context context, final Cursor cursor) {
-
-        long vId = cursor.getLong(cursor.getColumnIndex(FavouritesTableHelper.MOVIE_ID));
-        Cursor vCursorMovie = context.getContentResolver().query(Uri.parse(Provider.MOVIES_URI+"/"+vId), null, null,null, null);
+// QUERY CON TABELLA PREFERITI
+//        long vId = cursor.getLong(cursor.getColumnIndex(FavouritesTableHelper.MOVIE_ID));
+//        Cursor vCursorMovie = context.getContentResolver().query(Uri.parse(Provider.MOVIES_URI+"/"+vId), null, null,null, null);
 
         ConstraintLayout vLayoutMovie = view.findViewById(R.id.layoutMovie);
         ImageView vImmagine = view.findViewById(R.id.poster_favorite_img);
@@ -58,15 +58,14 @@ public class DialogAdapter extends CursorAdapter {
         mRequestOptions = new RequestOptions();
         mRequestOptions.placeholder(R.drawable.ic_movie_placeholder);
 
-        while (vCursorMovie.moveToNext()) {
-            Glide
-                    .with(context)
-                    .setDefaultRequestOptions(mRequestOptions)
-                    .load(vCursorMovie.getString(vCursorMovie.getColumnIndex(MovieTableHelper.POSTER_PATH)))
-                    .into(vImmagine);
+        Glide
+                .with(context)
+                .setDefaultRequestOptions(mRequestOptions)
+                .load(cursor.getString(cursor.getColumnIndex(MovieTableHelper.POSTER_PATH)))
+                .into(vImmagine);
 
-            vTitle.setText(vCursorMovie.getString(vCursorMovie.getColumnIndex(MovieTableHelper.TITLE)));
-        }
+        vTitle.setText(cursor.getString(cursor.getColumnIndex(MovieTableHelper.TITLE)));
+
         vLayoutMovie.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

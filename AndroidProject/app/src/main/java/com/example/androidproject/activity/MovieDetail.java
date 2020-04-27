@@ -86,9 +86,14 @@ public class MovieDetail extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (mId!=-1) {
+// AGGIUNTA AI PREFERITI CON TABELLA FAVOURITE
+//                    ContentValues vValues = new ContentValues();
+//                    vValues.put(FavouritesTableHelper.MOVIE_ID, mId);
+//                    Uri vResult = getContentResolver().insert(Provider.FAVOURITES_URI, vValues);
+//                    Toast.makeText(MovieDetail.this,"Movie aggiunto ai preferiti :)",Toast.LENGTH_LONG).show();
                     ContentValues vValues = new ContentValues();
-                    vValues.put(FavouritesTableHelper.MOVIE_ID, mId);
-                    Uri vResult = getContentResolver().insert(Provider.FAVOURITES_URI, vValues);
+                    vValues.put(MovieTableHelper.FAVOURITE, 1);
+                    int vResult = getContentResolver().update(Uri.parse(Provider.MOVIES_URI+"/"+mId), vValues, null, null);
                     Toast.makeText(MovieDetail.this,"Movie aggiunto ai preferiti :)",Toast.LENGTH_LONG).show();
                     mFabAddFavourite.setImageDrawable(getDrawable(R.drawable.ic_favorite_black_24dp)); //CHECK
                 }else

@@ -62,7 +62,7 @@ public class DialogPreferiti extends DialogFragment implements LoaderManager.Loa
     @NonNull
     @Override
     public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
-        return new CursorLoader(getActivity(), Provider.FAVOURITES_URI,null,null,null,null);
+        return new CursorLoader(getActivity(), Provider.MOVIES_URI,null,"favourite = 1" ,null,null);
 
     }
 
@@ -75,4 +75,21 @@ public class DialogPreferiti extends DialogFragment implements LoaderManager.Loa
     public void onLoaderReset(@NonNull Loader<Cursor> loader) {
         mAdapter.changeCursor(null);
     }
+// LOADER CON TABELLA PREFERITI
+//    @NonNull
+//    @Override
+//    public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
+//        return new CursorLoader(getActivity(), Provider.FAVOURITES_URI,null,null,null,null);
+//
+//    }
+//
+//    @Override
+//    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
+//        mAdapter.changeCursor(data);
+//    }
+//
+//    @Override
+//    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
+//        mAdapter.changeCursor(null);
+//    }
 }
