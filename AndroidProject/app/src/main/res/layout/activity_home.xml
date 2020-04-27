@@ -23,7 +23,6 @@
         android:layout_marginBottom="16dp"
         android:src="@drawable/ic_favorite_black_24dp"
         android:tint="#FFFFFF"
-        app:backgroundTint="@color/favRed"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
