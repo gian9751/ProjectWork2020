@@ -58,7 +58,7 @@ public class DialogAdapter extends CursorAdapter {
         mRequestOptions = new RequestOptions();
         mRequestOptions.placeholder(R.drawable.ic_movie_placeholder);
 
-        if (vCursorMovie.moveToNext()) {
+        while (vCursorMovie.moveToNext()) {
             Glide
                     .with(context)
                     .setDefaultRequestOptions(mRequestOptions)

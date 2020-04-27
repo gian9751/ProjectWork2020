@@ -29,30 +29,31 @@ public class DialogPreferiti extends DialogFragment implements LoaderManager.Loa
     private static final int MY_LOADER_ID = 1;
     DialogAdapter mAdapter;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        getLoaderManager().initLoader(MY_LOADER_ID,null,this);
+    }
+
+
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
-        View vView = getActivity().getLayoutInflater().inflate(R.layout.dialog_favorites_list, null);
-
-        ListView vListView = vView.findViewById(R.id.favorite_list);
-
         mAdapter = new DialogAdapter(getActivity(),null);
-        vListView.setAdapter(mAdapter);
 
-        getActivity().getSupportLoaderManager().initLoader(MY_LOADER_ID,null,this);
-
-        AlertDialog.Builder vBuilder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder vBuilder = new AlertDialog.Builder(getContext());
 
         vBuilder
                 .setTitle("Lista preferiti")
+                .setAdapter(mAdapter,null)
                 .setNegativeButton("Close",new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         dismiss();
                     }
-                })
-                .setView(vView);
+                });
 
         return vBuilder.create();
 
