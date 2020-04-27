@@ -90,6 +90,7 @@ public class MovieDetail extends AppCompatActivity {
                     vValues.put(FavouritesTableHelper.MOVIE_ID, mId);
                     Uri vResult = getContentResolver().insert(Provider.FAVOURITES_URI, vValues);
                     Toast.makeText(MovieDetail.this,"Movie aggiunto ai preferiti :)",Toast.LENGTH_LONG).show();
+                    mFabAddFavourite.setImageDrawable(getDrawable(R.drawable.ic_favorite_black_24dp)); //CHECK
                 }else
                     Toast.makeText(MovieDetail.this,"Errore, non è stato possibile visualizzare il film",Toast.LENGTH_LONG).show();
             }
