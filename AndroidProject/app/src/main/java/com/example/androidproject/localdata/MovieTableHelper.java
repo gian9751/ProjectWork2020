@@ -10,6 +10,7 @@ public class MovieTableHelper implements BaseColumns {
     public static final String POSTER_PATH = "poster_path"; //immagine da utilizzare nella home
     public static final String BACKDROP_PATH = "backdrop_path"; //immagine da utilizzare nel dettaglio
     public static final String FAVOURITE = "favourite"; // valore 0 non è tra i preferiti, valore 1 è tra i preferiti
+    public static final String PAGE = "page";
 
     public static final String CREATE = "CREATE TABLE " + TABLE_NAME + " ( " +
             _ID + " INTEGER PRIMARY KEY, " +
@@ -17,6 +18,7 @@ public class MovieTableHelper implements BaseColumns {
             PLOT + " TEXT, " +
             POSTER_PATH + " TEXT, " +
             BACKDROP_PATH + " TEXT, " +
-            FAVOURITE + " INTEGER DEFAULT 0);";
+            FAVOURITE + " INTEGER DEFAULT 0, " +
+            PAGE + " INTEGER);";
 
 }

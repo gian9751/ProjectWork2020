@@ -37,8 +37,8 @@ public class WebService {
         return instance;
     }
 
-    public void getDiscoverMovie(final IWebService serviceListener) {
-        discoverMovieService.discoverMovie(API_KEY, 1).enqueue(new Callback<DiscoverMovieResponse>() {
+    public void getDiscoverMovie(int page, final IWebService serviceListener) {
+        discoverMovieService.discoverMovie(API_KEY, page).enqueue(new Callback<DiscoverMovieResponse>() {
 
             @Override
             public void onResponse(Call<DiscoverMovieResponse> call, Response<DiscoverMovieResponse> response) {
