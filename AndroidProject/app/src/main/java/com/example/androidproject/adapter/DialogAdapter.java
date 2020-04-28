@@ -54,10 +54,11 @@ public class DialogAdapter extends CursorAdapter {
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup viewGroup) {
-        LayoutInflater vInflater = LayoutInflater.from(context);
-        View vView = vInflater.inflate(R.layout.dialog_item_favorite,viewGroup,false);
 
-        return  vView;
+           LayoutInflater vInflater = LayoutInflater.from(context);
+           View vView = vInflater.inflate(R.layout.dialog_item_favorite, viewGroup, false);
+
+           return vView;
     }
 
     @Override

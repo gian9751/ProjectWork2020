@@ -11,13 +11,13 @@
         android:id="@+id/imageViewColumn1"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_margin="10dp"
+        android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/imageViewColumn2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@drawable/ic_movie_placeholder"
-        android:focusable="true"
-        android:layout_margin="5dp"/>
+        tools:srcCompat="@drawable/ic_movie_placeholder" />
 
     <ImageView
         android:id="@+id/imageViewColumn2"
@@ -29,7 +29,7 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@drawable/ic_movie_placeholder"
         android:focusable="true"
-        android:layout_margin="5dp"
+        android:layout_margin="10dp"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
