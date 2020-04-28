@@ -49,9 +49,11 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
         loadMovie();
 
         mListView = findViewById(R.id.listView);
+        mFABFavorites = findViewById(R.id.fab_favorite_list);
+
         mAdapter = new MovieAdapter(Home.this,null);
         mListView.setAdapter(mAdapter);
-        mFABFavorites = findViewById(R.id.fab_favorite_list);
+
         mFABFavorites.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -59,6 +61,7 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
                 vDialogPreferiti.show(getSupportFragmentManager(), null);
             }
         });
+
         getSupportLoaderManager().initLoader(MY_LOADER_ID,null,this);
     }
 

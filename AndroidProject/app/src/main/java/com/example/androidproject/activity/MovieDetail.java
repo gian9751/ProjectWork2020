@@ -58,6 +58,7 @@ public class MovieDetail extends AppCompatActivity {
                 String vPlot = vCursor.getString(vCursor.getColumnIndex(MovieTableHelper.PLOT));
                 String vImageCover = vCursor.getString(vCursor.getColumnIndex(MovieTableHelper.BACKDROP_PATH));
                 String vImagePoster = vCursor.getString(vCursor.getColumnIndex(MovieTableHelper.POSTER_PATH));
+                int vFavorite = vCursor.getInt(vCursor.getColumnIndex(MovieTableHelper.FAVOURITE));
 
                 Log.d("Cover", vImageCover);
 
@@ -76,6 +77,10 @@ public class MovieDetail extends AppCompatActivity {
 
                 mTextViewTitle.setText(vTitolo + "");
                 mTextViewPlot.setText(vPlot + "");
+
+                if (vFavorite==1){
+                    mFabAddFavourite.setImageDrawable(getDrawable(R.drawable.ic_favorite_black_24dp));
+                }
             }
 
         }else
@@ -86,16 +91,20 @@ public class MovieDetail extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (mId!=-1) {
-// AGGIUNTA AI PREFERITI CON TABELLA FAVOURITE
-//                    ContentValues vValues = new ContentValues();
-//                    vValues.put(FavouritesTableHelper.MOVIE_ID, mId);
-//                    Uri vResult = getContentResolver().insert(Provider.FAVOURITES_URI, vValues);
-//                    Toast.makeText(MovieDetail.this,"Movie aggiunto ai preferiti :)",Toast.LENGTH_LONG).show();
-                    ContentValues vValues = new ContentValues();
-                    vValues.put(MovieTableHelper.FAVOURITE, 1);
-                    int vResult = getContentResolver().update(Uri.parse(Provider.MOVIES_URI+"/"+mId), vValues, null, null);
-                    Toast.makeText(MovieDetail.this,"Movie aggiunto ai preferiti :)",Toast.LENGTH_LONG).show();
-                    mFabAddFavourite.setImageDrawable(getDrawable(R.drawable.ic_favorite_black_24dp)); //CHECK
+                    if (getContentResolver().query(Uri.parse(Provider.MOVIES_URI+"/"+mId),null,MovieTableHelper.FAVOURITE+" = 0",null,null).getCount()==1) {
+                        ContentValues vValues = new ContentValues();
+                        vValues.put(MovieTableHelper.FAVOURITE, 1);
+                        int vResult = getContentResolver().update(Uri.parse(Provider.MOVIES_URI + "/" + mId), vValues, null, null);
+                        mFabAddFavourite.setImageDrawable(getDrawable(R.drawable.ic_favorite_black_24dp)); //CHECK
+                        Toast.makeText(MovieDetail.this, "Movie aggiunto ai preferiti :)", Toast.LENGTH_LONG).show();
+                    }
+                    else{
+                        ContentValues vValues = new ContentValues();
+                        vValues.put(MovieTableHelper.FAVOURITE, 0);
+                        int vResult = getContentResolver().update(Uri.parse(Provider.MOVIES_URI + "/" + mId), vValues, null, null);
+                        mFabAddFavourite.setImageDrawable(getDrawable(R.drawable.ic_favorite_border_black_24dp)); //UNCHECK
+                        Toast.makeText(MovieDetail.this, "Movie eliminato dai preferiti :)", Toast.LENGTH_LONG).show();
+                    }
                 }else
                     Toast.makeText(MovieDetail.this,"Errore, non è stato possibile visualizzare il film",Toast.LENGTH_LONG).show();
             }

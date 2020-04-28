@@ -1,5 +1,6 @@
 package com.example.androidproject.adapter;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -99,10 +100,16 @@ public class DialogAdapter extends CursorAdapter {
             }
         });
 
+        final ViewHolder finalVViewHolder = vViewHolder;
         vViewHolder.mHeartPreferito.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context,"Hai premuto sul cuore",Toast.LENGTH_SHORT).show();
+                cursor.moveToPosition(position);
+                ContentValues vValues = new ContentValues();
+                vValues.put(MovieTableHelper.FAVOURITE, 0);
+                finalVViewHolder.mHeartPreferito.setImageDrawable(context.getDrawable(R.drawable.ic_favorite_border_black_24dp)); //UNCHECK
+                int vResult = context.getContentResolver().update(Uri.parse(Provider.MOVIES_URI + "/" + cursor.getLong(cursor.getColumnIndex(MovieTableHelper._ID))), vValues, null, null);
+                Toast.makeText(context, "Movie eliminato dai preferiti :)", Toast.LENGTH_LONG).show();
             }
         });
     }
