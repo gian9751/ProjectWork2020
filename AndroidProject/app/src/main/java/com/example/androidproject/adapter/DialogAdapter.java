@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,21 @@ public class DialogAdapter extends CursorAdapter {
 
     RequestOptions mRequestOptions;
 
+    class ViewHolder {
+
+        ConstraintLayout mLayoutMovie;
+        ImageView mImmagine;
+        TextView mTitle;
+        ImageButton mHeartPreferito;
+
+        public ViewHolder(View view) {
+            mLayoutMovie = view.findViewById(R.id.layoutMovie);
+            mImmagine = view.findViewById(R.id.poster_favorite_img);
+            mTitle = view.findViewById(R.id.favorite_title_text);
+            mHeartPreferito = view.findViewById(R.id.favorite_button);
+        }
+    }
+
     public DialogAdapter(Context context, Cursor c) {
         super(context, c);
     }
@@ -49,11 +65,16 @@ public class DialogAdapter extends CursorAdapter {
 //        long vId = cursor.getLong(cursor.getColumnIndex(FavouritesTableHelper.MOVIE_ID));
 //        Cursor vCursorMovie = context.getContentResolver().query(Uri.parse(Provider.MOVIES_URI+"/"+vId), null, null,null, null);
 
-        ConstraintLayout vLayoutMovie = view.findViewById(R.id.layoutMovie);
-        ImageView vImmagine = view.findViewById(R.id.poster_favorite_img);
-        TextView vTitle = view.findViewById(R.id.favorite_title_text);
+        ViewHolder vViewHolder = (ViewHolder) view.getTag();
+        if (vViewHolder == null) {
+            Log.d("viewHolderDialog", "View Holder null");
+            vViewHolder = new ViewHolder(view);
+            view.setTag(vViewHolder);
+        }else{
+            Log.d("viewHolderDialog", "view holder diverso da null");
+        }
 
-        ImageButton vHeartPreferito = view.findViewById(R.id.favorite_button);
+        final int position = cursor.getPosition();
 
         mRequestOptions = new RequestOptions();
         mRequestOptions.placeholder(R.drawable.ic_movie_placeholder);
@@ -62,18 +83,23 @@ public class DialogAdapter extends CursorAdapter {
                 .with(context)
                 .setDefaultRequestOptions(mRequestOptions)
                 .load(cursor.getString(cursor.getColumnIndex(MovieTableHelper.POSTER_PATH)))
-                .into(vImmagine);
+                .into(vViewHolder.mImmagine);
 
-        vTitle.setText(cursor.getString(cursor.getColumnIndex(MovieTableHelper.TITLE)));
+        vViewHolder.mTitle.setText(cursor.getString(cursor.getColumnIndex(MovieTableHelper.TITLE)));
 
-        vLayoutMovie.setOnClickListener(new View.OnClickListener() {
+        vViewHolder.mLayoutMovie.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context,"Hai premuto su un movie",Toast.LENGTH_SHORT).show();
+                cursor.moveToPosition(position);
+                Intent vI = new Intent(context,MovieDetail.class);
+                Bundle vBundle = new Bundle();
+                vBundle.putLong(ID, cursor.getLong(cursor.getColumnIndex(MovieTableHelper._ID)));
+                vI.putExtras(vBundle);
+                context.startActivity(vI);
             }
         });
 
-        vHeartPreferito.setOnClickListener(new View.OnClickListener() {
+        vViewHolder.mHeartPreferito.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Toast.makeText(context,"Hai premuto sul cuore",Toast.LENGTH_SHORT).show();

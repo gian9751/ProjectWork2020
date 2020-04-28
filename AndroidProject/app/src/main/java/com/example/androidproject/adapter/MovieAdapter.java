@@ -5,16 +5,19 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.media.Image;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cursoradapter.widget.CursorAdapter;
 import androidx.recyclerview.widget.RecyclerView;
+
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -31,6 +34,16 @@ public class MovieAdapter extends CursorAdapter {
 
     RequestOptions mRequestOptions ;
 
+    class ViewHolder {
+
+        ImageView mImage1, mImage2;
+
+        public ViewHolder(View view) {
+            mImage1 = view.findViewById(R.id.imageViewColumn1);
+            mImage2 = view.findViewById(R.id.imageViewColumn2);
+        }
+    }
+
     public MovieAdapter(Context context, Cursor c) {
         super(context, c);
     }
@@ -46,8 +59,14 @@ public class MovieAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, final Context context, final Cursor cursor) {
 
-        ImageView vImmagine1 = view.findViewById(R.id.imageViewColumn1);
-        ImageView vImmagine2 = view.findViewById(R.id.imageViewColumn2);
+        ViewHolder vViewHolder = (ViewHolder) view.getTag();
+        if (vViewHolder == null) {
+            Log.d("viewHolder", "View Holder null");
+            vViewHolder = new ViewHolder(view);
+            view.setTag(vViewHolder);
+        }else{
+            Log.d("view holder", "view holder diverso da null");
+        }
 
         final int position = cursor.getPosition() * 2;
 
@@ -63,13 +82,13 @@ public class MovieAdapter extends CursorAdapter {
                 .with(context)
                 .setDefaultRequestOptions(mRequestOptions)
                 .load(cursor.getString(cursor.getColumnIndex(MovieTableHelper.POSTER_PATH)))
-                .into(vImmagine1);
+                .into(vViewHolder.mImage1);
 
-        vImmagine1.setOnClickListener(new View.OnClickListener() {
+        vViewHolder.mImage1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 cursor.moveToPosition(position);
-                 Intent vI = new Intent(context,MovieDetail.class);
+                Intent vI = new Intent(context,MovieDetail.class);
                 Bundle vBundle = new Bundle();
                 vBundle.putLong(ID, getCursor().getLong(cursor.getColumnIndex(MovieTableHelper._ID)));
                 vI.putExtras(vBundle);
@@ -86,9 +105,9 @@ public class MovieAdapter extends CursorAdapter {
                 .with(context)
                 .setDefaultRequestOptions(mRequestOptions)
                 .load(cursor.getString(cursor.getColumnIndex(MovieTableHelper.POSTER_PATH)))
-                .into(vImmagine2);
+                .into(vViewHolder.mImage2);
 
-        vImmagine2.setOnClickListener(new View.OnClickListener() {
+        vViewHolder.mImage2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 cursor.moveToPosition(position + 1);
