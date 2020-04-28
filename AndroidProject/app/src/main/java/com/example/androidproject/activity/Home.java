@@ -41,7 +41,9 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
     ListView mListView;
     MovieAdapter mAdapter;
     FloatingActionButton mFABFavorites;
-    int mPage = 1;
+    View footerView;
+
+    int mPage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,10 +54,12 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
 
         mWebService = WebService.getInstance();
 
-        //loadMovie(mPage);
-
         mListView = findViewById(R.id.listView);
         mFABFavorites = findViewById(R.id.fab_favorite_list);
+        LayoutInflater li = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        footerView = li.inflate(R.layout.footer_view, null);
+
+        gestioneDellePage();
 
         mAdapter = new MovieAdapter(Home.this,null);
         mListView.setAdapter(mAdapter);
@@ -70,29 +74,39 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
 
         getSupportLoaderManager().initLoader(MY_LOADER_ID,null,this);
 
+        gestioneDellEndlessScroll();
+    }
 
-        //CODICE TEST ENDLESS SCROLL
-        LayoutInflater li = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        footerView = li.inflate(R.layout.footer_view, null);
-        mHandler = new MyHandler();
+    private void gestioneDellEndlessScroll() {
         mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
-
             }
 
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                //Controlla quando si è all'ultimo elemento della list view
-                if (view.getLastVisiblePosition() == totalItemCount - 1 && isLoading ==false ) {
-                    isLoading = true;
-                    Thread thread = new ThreadGetMoreData();
-                    //avvia thread
-                    thread.start();
+                //Log.d("Page scroll", ""+view.getLastVisiblePosition());
+
+                if (view.getLastVisiblePosition()/10 == mPage-1) {
+                    loadMovie(++mPage);
+                    mListView.addFooterView(footerView);
                 }
             }
         });
-        //FINE COD TEST
+    }
+
+    private void gestioneDellePage() {
+        if (getContentResolver().query(Provider.MOVIES_URI,null,null,null,null).getCount()==0){
+            mPage = 1;
+            loadMovie(mPage++);
+            loadMovie(mPage);
+
+        }else{
+            Cursor vCursor = getContentResolver().query(Provider.MOVIES_URI,null,null,null,MovieTableHelper.PAGE + " DESC");
+            vCursor.moveToNext();
+            mPage = vCursor.getInt(vCursor.getColumnIndex(MovieTableHelper.PAGE));
+            Log.d("Page", mPage+"");
+        }
     }
 
     @Override
@@ -133,7 +147,8 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
 
     @Override
     public void onDiscoverMovieFetched(boolean success, DiscoverMovieResponse response, int errorCode, String errorMessage) {
-
+        if (mListView.getFooterViewsCount()==1)
+            mListView.removeFooterView(footerView);
     }
 
     @NonNull
@@ -151,55 +166,4 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
     public void onLoaderReset(@NonNull Loader<Cursor> loader) {
         mAdapter.changeCursor(null);
     }
-
-
-    //TEST endless scroll GUARDA QUI: https://youtu.be/XwIKb_f0Y_w
-
-    public Handler mHandler;
-    public View footerView;
-    public boolean isLoading = false;
-
-    public class MyHandler extends Handler{
-        @Override
-        public void handleMessage(@NonNull Message msg) {
-            switch (msg.what) {
-                case 0:
-                    //Aggiunge loading view durante il caricamento
-                    mListView.addFooterView(footerView);
-                    break;
-                case 1:
-                    //Aggiornamento dati e UI
-                    loadMovie(mPage++);
-                    //rimozione footer
-                    mListView.removeFooterView(footerView);
-                    isLoading=false;
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-
-    public class ThreadGetMoreData extends Thread {
-        @Override
-        public void run() {
-            //Aggiunge footer view dopo aver ricevuto i dati
-            mHandler.sendEmptyMessage(0);
-            //Cerca ulteriori dati
-                loadMovie(mPage++);
-            //Ritard durante debug. RIMUOVERE SE WORKA
-
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            //Mandare risultato all'Handle
-            Message msg = mHandler.obtainMessage(1); //DEL CODICE QUI DOPO 1 (Cerca ulteriori dati)
-            Log.d("DEV", "" + mPage);
-            mHandler.sendMessage(msg);
-        }
-    }
-    //FINE TEST
-
 }
