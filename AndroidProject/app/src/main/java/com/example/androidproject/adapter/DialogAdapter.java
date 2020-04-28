@@ -63,9 +63,6 @@ public class DialogAdapter extends CursorAdapter {
 
     @Override
     public void bindView(View view, final Context context, final Cursor cursor) {
-// QUERY CON TABELLA PREFERITI
-//        long vId = cursor.getLong(cursor.getColumnIndex(FavouritesTableHelper.MOVIE_ID));
-//        Cursor vCursorMovie = context.getContentResolver().query(Uri.parse(Provider.MOVIES_URI+"/"+vId), null, null,null, null);
 
         ViewHolder vViewHolder = (ViewHolder) view.getTag();
         if (vViewHolder == null) {
