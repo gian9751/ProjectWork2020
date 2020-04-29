@@ -3,14 +3,19 @@ package com.example.androidproject.activity;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ContentValues;
+import android.content.res.Configuration;
 import android.database.Cursor;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewFlipper;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -32,12 +37,18 @@ public class MovieDetail extends AppCompatActivity {
     TextView mTextViewTitle, mTextViewPlot;
     ImageView mImageViewPoster, mImageViewCover;
     FloatingActionButton mFabAddFavourite;
+
+    //TEST
+    ViewFlipper mViewFlipper;
+    //TEST
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
 
         getSupportActionBar().setTitle("Movie details");
+
 
         mImageViewCover = findViewById(R.id.img_cover);
         mImageViewPoster = findViewById(R.id.img_poster);
@@ -47,6 +58,8 @@ public class MovieDetail extends AppCompatActivity {
 
         mRequestOptions = new RequestOptions();
         mRequestOptions.placeholder(R.drawable.ic_movie_placeholder);
+
+
 
         if (getIntent().getExtras() != null)
             mId = getIntent().getExtras().getLong(ID);
@@ -109,5 +122,16 @@ public class MovieDetail extends AppCompatActivity {
                     Toast.makeText(MovieDetail.this,"Errore, non è stato possibile visualizzare il film",Toast.LENGTH_LONG).show();
             }
         });
+
+        //imageflipper per landscape
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            mViewFlipper = findViewById(R.id.imageFlipper);
+            Animation in = AnimationUtils.loadAnimation(this, android.R.anim.slide_in_left);
+            Animation out = AnimationUtils.loadAnimation(this, android.R.anim.slide_out_right);
+            mViewFlipper.setInAnimation(in);
+            mViewFlipper.setOutAnimation(out);
+            mViewFlipper.setAutoStart(true);
+            mViewFlipper.setFlipInterval(3000);
+        }
     }
 }
