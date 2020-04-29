@@ -10,10 +10,13 @@
 
     <ViewFlipper
         android:id="@+id/imageFlipper"
-        android:layout_width="200dp"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintStart_toEndOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        >
+
 
     <ImageView
         android:id="@+id/img_cover"
@@ -22,22 +25,19 @@
         android:contentDescription="@string/default_image_content_description"
         android:src="@drawable/ic_movie_placeholder"
         android:scaleType="centerCrop"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintStart_toEndOf="parent"
         />
 
-    <ImageView
-        android:id="@+id/img_poster"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:adjustViewBounds="true"
-        android:contentDescription="@string/default_image_content_description"
-        android:src="@drawable/ic_movie_placeholder"
-        android:scaleType="centerCrop"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:elevation="20dp"/>
+        <ImageView
+            android:id="@+id/img_poster"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/default_image_content_description"
+            android:src="@drawable/ic_movie_placeholder"
+            android:layout_centerVertical="true"
+            android:scaleType="centerCrop"
+            android:layout_gravity="center"
+            android:elevation="20dp"/>
 
     </ViewFlipper>
 
