@@ -1,9 +1,11 @@
 package com.example.androidproject.adapter;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.media.Image;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,6 +27,7 @@ import com.example.androidproject.R;
 import com.example.androidproject.activity.MovieDetail;
 import com.example.androidproject.data.models.Movie;
 import com.example.androidproject.localdata.MovieTableHelper;
+import com.example.androidproject.localdata.Provider;
 
 import java.util.ArrayList;
 
@@ -115,6 +118,23 @@ public class MovieAdapter extends CursorAdapter {
             }
         });
 
+        vViewHolder.mImage1.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                cursor.moveToPosition(position);
+                if (cursor.getInt(cursor.getColumnIndex(MovieTableHelper.FAVOURITE))==0) {
+                    ContentValues vValues = new ContentValues();
+                    vValues.put(MovieTableHelper.FAVOURITE, 1);
+                    int vResult = context.getContentResolver().update(Uri.parse(Provider.MOVIES_URI + "/" + cursor.getLong(cursor.getColumnIndex(MovieTableHelper._ID))), vValues, null, null);
+                    Toast.makeText(context, "Movie aggiunto ai preferiti :)", Toast.LENGTH_LONG).show();
+                }
+                else{
+                    Toast.makeText(context, "Il movie è già presente tra i preferiti :)", Toast.LENGTH_LONG).show();
+                }
+                return false;
+            }
+        });
+
         if (position + 1 >= cursor.getCount())
             return;
 
@@ -135,6 +155,23 @@ public class MovieAdapter extends CursorAdapter {
                 vBundle.putLong(ID, cursor.getLong(cursor.getColumnIndex(MovieTableHelper._ID)));
                 vI.putExtras(vBundle);
                 context.startActivity(vI);
+            }
+        });
+
+        vViewHolder.mImage2.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                cursor.moveToPosition(position + 1);
+                if (cursor.getInt(cursor.getColumnIndex(MovieTableHelper.FAVOURITE))==0) {
+                    ContentValues vValues = new ContentValues();
+                    vValues.put(MovieTableHelper.FAVOURITE, 1);
+                    int vResult = context.getContentResolver().update(Uri.parse(Provider.MOVIES_URI + "/" + cursor.getLong(cursor.getColumnIndex(MovieTableHelper._ID))), vValues, null, null);
+                    Toast.makeText(context, "Movie aggiunto ai preferiti :)", Toast.LENGTH_LONG).show();
+                }
+                else{
+                    Toast.makeText(context, "Il movie è già presente tra i preferiti :)", Toast.LENGTH_LONG).show();
+                }
+                return false;
             }
         });
 
@@ -179,6 +216,23 @@ public class MovieAdapter extends CursorAdapter {
             }
         });
 
+        vViewHolder.mImage1.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                cursor.moveToPosition(position);
+                if (cursor.getInt(cursor.getColumnIndex(MovieTableHelper.FAVOURITE))==0) {
+                    ContentValues vValues = new ContentValues();
+                    vValues.put(MovieTableHelper.FAVOURITE, 1);
+                    int vResult = context.getContentResolver().update(Uri.parse(Provider.MOVIES_URI + "/" + cursor.getLong(cursor.getColumnIndex(MovieTableHelper._ID))), vValues, null, null);
+                    Toast.makeText(context, "Movie aggiunto ai preferiti :)", Toast.LENGTH_LONG).show();
+                }
+                else{
+                    Toast.makeText(context, "Il movie è già presente tra i preferiti :)", Toast.LENGTH_LONG).show();
+                }
+                return false;
+            }
+        });
+
         if (position + 1 >= cursor.getCount())
             return;
 
@@ -199,6 +253,23 @@ public class MovieAdapter extends CursorAdapter {
                 vBundle.putLong(ID, cursor.getLong(cursor.getColumnIndex(MovieTableHelper._ID)));
                 vI.putExtras(vBundle);
                 context.startActivity(vI);
+            }
+        });
+
+        vViewHolder.mImage2.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                cursor.moveToPosition(position + 1);
+                if (cursor.getInt(cursor.getColumnIndex(MovieTableHelper.FAVOURITE))==0) {
+                    ContentValues vValues = new ContentValues();
+                    vValues.put(MovieTableHelper.FAVOURITE, 1);
+                    int vResult = context.getContentResolver().update(Uri.parse(Provider.MOVIES_URI + "/" + cursor.getLong(cursor.getColumnIndex(MovieTableHelper._ID))), vValues, null, null);
+                    Toast.makeText(context, "Movie aggiunto ai preferiti :)", Toast.LENGTH_LONG).show();
+                }
+                else{
+                    Toast.makeText(context, "Il movie è già presente tra i preferiti :)", Toast.LENGTH_LONG).show();
+                }
+                return false;
             }
         });
 
@@ -225,6 +296,23 @@ public class MovieAdapter extends CursorAdapter {
             }
         });
 
+        vViewHolder.mImage3.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                cursor.moveToPosition(position + 2);
+                if (cursor.getInt(cursor.getColumnIndex(MovieTableHelper.FAVOURITE))==0) {
+                    ContentValues vValues = new ContentValues();
+                    vValues.put(MovieTableHelper.FAVOURITE, 1);
+                    int vResult = context.getContentResolver().update(Uri.parse(Provider.MOVIES_URI + "/" + cursor.getLong(cursor.getColumnIndex(MovieTableHelper._ID))), vValues, null, null);
+                    Toast.makeText(context, "Movie aggiunto ai preferiti :)", Toast.LENGTH_LONG).show();
+                }
+                else{
+                    Toast.makeText(context, "Il movie è già presente tra i preferiti :)", Toast.LENGTH_LONG).show();
+                }
+                return false;
+            }
+        });
+
         if (position + 3 >= cursor.getCount())
             return;
 
@@ -245,6 +333,23 @@ public class MovieAdapter extends CursorAdapter {
                 vBundle.putLong(ID, cursor.getLong(cursor.getColumnIndex(MovieTableHelper._ID)));
                 vI.putExtras(vBundle);
                 context.startActivity(vI);
+            }
+        });
+
+        vViewHolder.mImage4.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                cursor.moveToPosition(position + 3);
+                if (cursor.getInt(cursor.getColumnIndex(MovieTableHelper.FAVOURITE))==0) {
+                    ContentValues vValues = new ContentValues();
+                    vValues.put(MovieTableHelper.FAVOURITE, 1);
+                    int vResult = context.getContentResolver().update(Uri.parse(Provider.MOVIES_URI + "/" + cursor.getLong(cursor.getColumnIndex(MovieTableHelper._ID))), vValues, null, null);
+                    Toast.makeText(context, "Movie aggiunto ai preferiti :)", Toast.LENGTH_LONG).show();
+                }
+                else{
+                    Toast.makeText(context, "Il movie è già presente tra i preferiti :)", Toast.LENGTH_LONG).show();
+                }
+                return false;
             }
         });
     }
