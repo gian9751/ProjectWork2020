@@ -34,6 +34,8 @@ import com.example.androidproject.localdata.MovieTableHelper;
 import com.example.androidproject.localdata.Provider;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import static com.example.androidproject.localdata.MovieTableHelper.PAGE;
+
 public class Home extends AppCompatActivity implements IWebService, LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int MY_LOADER_ID = 0;
@@ -53,6 +55,10 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
         setContentView(R.layout.activity_home);
 
         getSupportActionBar().setTitle("Movies");
+
+        if (savedInstanceState != null) {
+            mPage = savedInstanceState.getInt(PAGE);
+        }
 
         mWebService = WebService.getInstance();
 
@@ -104,9 +110,9 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
             loadMovie(mPage);
 
         }else{
-            Cursor vCursor = getContentResolver().query(Provider.MOVIES_URI,null,null,null,MovieTableHelper.PAGE + " DESC");
+            Cursor vCursor = getContentResolver().query(Provider.MOVIES_URI,null,null,null, PAGE + " DESC");
             vCursor.moveToNext();
-            mPage = vCursor.getInt(vCursor.getColumnIndex(MovieTableHelper.PAGE));
+            mPage = vCursor.getInt(vCursor.getColumnIndex(PAGE));
             Log.d("Page", mPage+"");
         }
     }
@@ -130,7 +136,7 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
                         vValues.put(MovieTableHelper.PLOT, movie.getOverview());
                         vValues.put(MovieTableHelper.POSTER_PATH, "https://image.tmdb.org/t/p/w500" + movie.getPosterPath());
                         vValues.put(MovieTableHelper.BACKDROP_PATH,"https://image.tmdb.org/t/p/w500" + movie.getBackdropPath());
-                        vValues.put(MovieTableHelper.PAGE, response.getPage());
+                        vValues.put(PAGE, response.getPage());
                         Log.d("asda", "insert" +  movie.getId());
 
                         Uri vResultUri = getContentResolver().insert(Provider.MOVIES_URI, vValues);
@@ -156,7 +162,7 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
     @NonNull
     @Override
     public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
-        return new CursorLoader(this, Provider.MOVIES_URI,null,null,null, MovieTableHelper.PAGE + " ASC");
+        return new CursorLoader(this, Provider.MOVIES_URI,null,null,null, PAGE + " ASC");
     }
 
     @Override
@@ -167,5 +173,11 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
     @Override
     public void onLoaderReset(@NonNull Loader<Cursor> loader) {
         mAdapter.changeCursor(null);
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(PAGE, mPage);
     }
 }
