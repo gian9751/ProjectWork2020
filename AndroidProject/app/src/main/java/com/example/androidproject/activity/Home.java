@@ -193,6 +193,8 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
 
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.kebab_menu, menu);
         getMenuInflater().inflate(R.menu.search_bar, menu);
         // Retrieve the SearchView and plug it into SearchManager
         mSearchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
@@ -226,13 +228,6 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
 
 
 
-        return true;
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.kebab_menu, menu);
         return true;
     }
 
