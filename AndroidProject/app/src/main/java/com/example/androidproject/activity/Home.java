@@ -105,11 +105,18 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
 
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                //Log.d("Page scroll", ""+view.getLastVisiblePosition());
+                Log.d("Page scroll", ""+view.getLastVisiblePosition());
 
-                if (view.getLastVisiblePosition()/10 == mPage-1) {
-                    loadMovie(++mPage);
-                    mListView.addFooterView(footerView);
+                if (getResources().getConfiguration().orientation==1){
+                    if (view.getLastVisiblePosition()/10 == mPage-1) {
+                        loadMovie(++mPage);
+                        mListView.addFooterView(footerView);
+                    }
+                } else {
+                    if (view.getLastVisiblePosition() / 5 == mPage - 1) {
+                        loadMovie(++mPage);
+                        mListView.addFooterView(footerView);
+                    }
                 }
             }
         });
