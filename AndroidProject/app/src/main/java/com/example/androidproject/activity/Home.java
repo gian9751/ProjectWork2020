@@ -60,7 +60,7 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        getSupportActionBar().setTitle("Movies");
+        getSupportActionBar().setTitle("CineWave");
 
         if (savedInstanceState != null) {
             mPage = savedInstanceState.getInt(PAGE);

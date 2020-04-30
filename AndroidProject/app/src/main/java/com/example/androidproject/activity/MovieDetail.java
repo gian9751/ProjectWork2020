@@ -5,14 +5,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.ContentValues;
 import android.content.res.Configuration;
 import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
@@ -25,6 +28,10 @@ import com.example.androidproject.localdata.FavouritesTableHelper;
 import com.example.androidproject.localdata.MovieTableHelper;
 import com.example.androidproject.localdata.Provider;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+
+import eightbitlab.com.blurview.BlurView;
+import eightbitlab.com.blurview.RenderScriptBlur;
 
 import static android.os.Build.ID;
 
@@ -40,6 +47,7 @@ public class MovieDetail extends AppCompatActivity {
 
     //TEST
     ViewFlipper mViewFlipper;
+    BlurView mBlurView;
     //TEST
 
     @Override
@@ -72,7 +80,6 @@ public class MovieDetail extends AppCompatActivity {
                 String vImageCover = vCursor.getString(vCursor.getColumnIndex(MovieTableHelper.BACKDROP_PATH));
                 String vImagePoster = vCursor.getString(vCursor.getColumnIndex(MovieTableHelper.POSTER_PATH));
                 int vFavorite = vCursor.getInt(vCursor.getColumnIndex(MovieTableHelper.FAVOURITE));
-
                 Log.d("Cover", vImageCover);
 
                 Glide
@@ -88,8 +95,13 @@ public class MovieDetail extends AppCompatActivity {
                         .load(vImagePoster)
                         .into(mImageViewPoster);
 
+
                 mTextViewTitle.setText(vTitolo + "");
                 mTextViewPlot.setText(vPlot + "");
+
+                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    landscape();
+                }
 
                 if (vFavorite==1){
                     mFabAddFavourite.setImageDrawable(getDrawable(R.drawable.ic_favorite_black_24dp));
@@ -124,14 +136,19 @@ public class MovieDetail extends AppCompatActivity {
         });
 
         //imageflipper per landscape
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+
+    }
+
+    private void landscape(){
+
             mViewFlipper = findViewById(R.id.imageFlipper);
+
+
             Animation in = AnimationUtils.loadAnimation(this, android.R.anim.slide_in_left);
             Animation out = AnimationUtils.loadAnimation(this, android.R.anim.slide_out_right);
             mViewFlipper.setInAnimation(in);
             mViewFlipper.setOutAnimation(out);
             mViewFlipper.setAutoStart(true);
             mViewFlipper.setFlipInterval(3000);
-        }
     }
 }
