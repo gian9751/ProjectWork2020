@@ -135,8 +135,13 @@ public class MovieAdapter extends CursorAdapter {
             }
         });
 
-        if (position + 1 >= cursor.getCount())
+        if(position + 1 >= cursor.getCount()) {
+            vViewHolder.mImage2.setImageDrawable(null);
+            vViewHolder.mImage2.setVisibility(View.INVISIBLE);
             return;
+        } else {
+            vViewHolder.mImage2.setVisibility(View.VISIBLE);
+        }
 
         cursor.moveToPosition(position + 1);
 

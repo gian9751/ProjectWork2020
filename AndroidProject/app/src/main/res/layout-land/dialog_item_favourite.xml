@@ -4,8 +4,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
-    android:descendantFocusability="beforeDescendants">
+    android:layout_height="125dp"
+    android:descendantFocusability="beforeDescendants"
+    >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layoutMovie"
@@ -15,18 +16,21 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/favorite_button"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp">
 
         <ImageView
             android:id="@+id/poster_favorite_img"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_marginStart="5dp"
             android:src="@drawable/ic_movie_placeholder"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/favorite_title_text"/>
+
+            />
 
         <TextView
             android:id="@+id/favorite_title_text"

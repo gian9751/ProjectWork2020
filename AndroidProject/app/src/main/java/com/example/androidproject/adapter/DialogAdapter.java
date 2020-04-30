@@ -76,19 +76,11 @@ public class DialogAdapter extends CursorAdapter {
         mRequestOptions = new RequestOptions();
         mRequestOptions.placeholder(R.drawable.ic_movie_placeholder);
 
-        if (context.getResources().getConfiguration().orientation==1) {
-            Glide
-                    .with(context)
-                    .setDefaultRequestOptions(mRequestOptions)
-                    .load(cursor.getString(cursor.getColumnIndex(MovieTableHelper.POSTER_PATH)))
-                    .into(vViewHolder.mImmagine);
-        }else {
-            Glide
-                    .with(context)
-                    .setDefaultRequestOptions(mRequestOptions)
-                    .load(cursor.getString(cursor.getColumnIndex(MovieTableHelper.BACKDROP_PATH)))
-                    .into(vViewHolder.mImmagine);
-        }
+        Glide
+                .with(context)
+                .setDefaultRequestOptions(mRequestOptions)
+                .load(cursor.getString(cursor.getColumnIndex(MovieTableHelper.POSTER_PATH)))
+                .into(vViewHolder.mImmagine);
 
 
         vViewHolder.mTitle.setText(cursor.getString(cursor.getColumnIndex(MovieTableHelper.TITLE)));

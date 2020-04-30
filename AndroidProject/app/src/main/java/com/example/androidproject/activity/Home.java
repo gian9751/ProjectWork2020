@@ -3,10 +3,13 @@ package com.example.androidproject.activity;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.core.view.MenuItemCompat;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
 
+import android.app.SearchManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -17,6 +20,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AbsListView;
@@ -46,6 +51,7 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
     MovieAdapter mAdapter;
     FloatingActionButton mFABFavorites;
     View footerView;
+    SearchView mSearchView;
 
     int mPage;
 
@@ -93,7 +99,7 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
 
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                //Log.d("Page scroll", ""+view.getLastVisiblePosition());
+                Log.d("Page scroll", ""+view.getLastVisiblePosition());
 
                 if (view.getLastVisiblePosition()/10 == mPage-1) {
                     loadMovie(++mPage);
@@ -167,7 +173,7 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
 
     @Override
     public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
-        mAdapter.changeCursor(data);
+            mAdapter.changeCursor(data);
     }
 
     @Override
@@ -179,5 +185,44 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(PAGE, mPage);
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(final Menu menu) {
+        getMenuInflater().inflate(R.menu.search_bar, menu);
+        // Retrieve the SearchView and plug it into SearchManager
+        mSearchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
+        SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
+        mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                if (!query.equals("")) {
+                    Cursor vCursor = getContentResolver().query(Provider.MOVIES_URI, null, MovieTableHelper.TITLE + " LIKE '%" + query + "%'", null, null);
+                    mAdapter.swapCursor(vCursor);
+                    mSearchView.setQuery("",false);
+                    mSearchView.setIconified(true);
+                    MenuItemCompat.collapseActionView(menu.getItem(0));
+                }
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (!newText.equals("")) {
+                    Cursor vCursor = getContentResolver().query(Provider.MOVIES_URI, null, MovieTableHelper.TITLE + " LIKE '%" + newText+"%'", null, null);
+                    mAdapter.swapCursor(vCursor);
+                }
+                return true;
+            }
+        });
+
+        //if (mSearchView.getOnFocusChangeListener().onFocusChange(mSearchView,true))
+
+
+
+        return true;
     }
 }
