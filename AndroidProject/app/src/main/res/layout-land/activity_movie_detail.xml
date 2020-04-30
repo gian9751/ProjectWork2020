@@ -24,7 +24,7 @@
         android:layout_height="match_parent"
         android:contentDescription="@string/default_image_content_description"
         android:src="@drawable/ic_movie_placeholder"
-        android:scaleType="centerCrop"
+        android:scaleType="matrix"
         />
 
         <ImageView

@@ -12,6 +12,7 @@ import androidx.loader.content.Loader;
 import android.app.SearchManager;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
@@ -238,7 +239,7 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_credits:
-                Toast.makeText(this, "Credits", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(Home.this, Credits.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
