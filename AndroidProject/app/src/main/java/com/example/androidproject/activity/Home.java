@@ -21,6 +21,9 @@ import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -99,7 +102,7 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
 
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                Log.d("Page scroll", ""+view.getLastVisiblePosition());
+                //Log.d("Page scroll", ""+view.getLastVisiblePosition());
 
                 if (view.getLastVisiblePosition()/10 == mPage-1) {
                     loadMovie(++mPage);
@@ -224,5 +227,23 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
 
 
         return true;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.kebab_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_credits:
+                Toast.makeText(this, "Credits", Toast.LENGTH_SHORT).show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

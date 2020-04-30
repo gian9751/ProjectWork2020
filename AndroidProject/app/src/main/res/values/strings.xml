@@ -4,6 +4,8 @@
     <string name="default_image_content_description">Movie Poster</string>
     <string name="plot_placeholder">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet vehicula sapien. Etiam in lorem vel eros sodales laoreet lobortis malesuada ex. Donec non turpis leo. Vivamus id feugiat massa. In egestas orci vitae posuere dignissim. Nullam porta, purus quis volutpat elementum, dolor nibh venenatis ipsum, non placerat leo nulla et libero. Vestibulum ultricies dictum massa, dignissim placerat lacus placerat eget. Morbi ut ligula sed ipsum venenatis ornare. Donec tincidunt elementum tellus sed efficitur. Etiam malesuada ligula eget sem rutrum dictum. Aenean dictum mollis nisi sit amet hendrerit. Nulla massa massa, dictum a lectus a, sollicitudin rhoncus tortor. Sed scelerisque mi in metus consectetur, sit amet tristique ex imperdiet. Mauris sed tortor quis neque fermentum maximus.</string>
     <string name="favorite_list">favourite list</string>
-    <string name="search_hint">search movie</string>
+    <string name="search_hint">Search movie</string>
 
+    <!--Kebab Menu-->
+    <string name="menu_credits">Credits</string>
 </resources>
