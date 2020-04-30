@@ -1,5 +1,6 @@
 package com.example.androidproject.adapter;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -37,21 +38,20 @@ public class MovieAdapter extends CursorAdapter {
 
     RequestOptions mRequestOptions ;
     boolean mOrientation;
+    Context mContext;
 
-    class ViewHolder {
-
-        ImageView mImage1, mImage2, mImage3, mImage4;
-
-        public ViewHolder(View view) {
-            mImage1 = view.findViewById(R.id.imageViewColumn1);
-            mImage2 = view.findViewById(R.id.imageViewColumn2);
-            mImage3 = view.findViewById(R.id.imageViewColumn3);
-            mImage4 = view.findViewById(R.id.imageViewColumn4);
-        }
-    }
+    IMovieAdapter mListener;
 
     public MovieAdapter(Context context, Cursor c) {
         super(context, c);
+
+        mContext = context;
+
+        if (context instanceof IMovieAdapter) {
+            mListener = (IMovieAdapter) context;
+        } else {
+            mListener = null;
+        }
     }
 
     @Override
@@ -74,7 +74,29 @@ public class MovieAdapter extends CursorAdapter {
     @Override
     public int getCount() {
         if (getCursor()!=null)
-            return (getCursor().getCount()%2==0)?getCursor().getCount()/2:getCursor().getCount()/2+1;
+            if (mContext.getResources().getConfiguration().orientation==1)
+                return (getCursor().getCount()%2==0)?getCursor().getCount()/2:getCursor().getCount()/2+1;
+            else
+                if (getCursor().getCount()%4==0)
+                    // nel caso sia divisibile per 4 ritorno la grandezza diviso 4
+                    return getCursor().getCount()/4;
+                else {
+                    // altrimenti divido la grandezza per quattro e prendo solo il valore decimale
+                    // se il valore decimale è minore di 0.30 significa che ho un poster in più
+                    // se il valore decimale è maggiore di 0.60 significa che ho tre poster in più
+                    // se il valore decimale non è minore di 0.30 e non è maggiore di 0.60 significa che ho due poster in più
+
+                    double vCursorSize = getCursor().getCount()/4;
+                    double vCursorSizeFractional = vCursorSize - (long)vCursorSize;
+
+                    if (vCursorSizeFractional < 0.30)
+                        return getCursor().getCount() / 4 + 1;
+                    else if (vCursorSizeFractional > 0.60)
+                        return getCursor().getCount() / 4 + 3;
+                    else
+                        return getCursor().getCount() / 4 + 2;
+                }
+
         else
             return 0;
     }
@@ -115,6 +137,7 @@ public class MovieAdapter extends CursorAdapter {
                 vBundle.putLong(ID, getCursor().getLong(cursor.getColumnIndex(MovieTableHelper._ID)));
                 vI.putExtras(vBundle);
                 context.startActivity(vI);
+                mListener.onListViewItemSelected(true);
             }
         });
 
@@ -160,6 +183,7 @@ public class MovieAdapter extends CursorAdapter {
                 vBundle.putLong(ID, cursor.getLong(cursor.getColumnIndex(MovieTableHelper._ID)));
                 vI.putExtras(vBundle);
                 context.startActivity(vI);
+                mListener.onListViewItemSelected(true);
             }
         });
 
@@ -198,6 +222,7 @@ public class MovieAdapter extends CursorAdapter {
         if (position >= cursor.getCount())
             return;
 
+
         cursor.moveToPosition(position);
 
         mRequestOptions = new RequestOptions();
@@ -218,6 +243,7 @@ public class MovieAdapter extends CursorAdapter {
                 vBundle.putLong(ID, getCursor().getLong(cursor.getColumnIndex(MovieTableHelper._ID)));
                 vI.putExtras(vBundle);
                 context.startActivity(vI);
+                mListener.onListViewItemSelected(true);
             }
         });
 
@@ -238,8 +264,12 @@ public class MovieAdapter extends CursorAdapter {
             }
         });
 
-        if (position + 1 >= cursor.getCount())
+        if (position + 1 >= cursor.getCount()){
+            vViewHolder.mImage2.setImageDrawable(null);
+            vViewHolder.mImage2.setVisibility(View.INVISIBLE);
             return;
+        } else
+            vViewHolder.mImage2.setVisibility(View.VISIBLE);
 
         cursor.moveToPosition(position + 1);
 
@@ -258,6 +288,7 @@ public class MovieAdapter extends CursorAdapter {
                 vBundle.putLong(ID, cursor.getLong(cursor.getColumnIndex(MovieTableHelper._ID)));
                 vI.putExtras(vBundle);
                 context.startActivity(vI);
+                mListener.onListViewItemSelected(true);
             }
         });
 
@@ -278,8 +309,12 @@ public class MovieAdapter extends CursorAdapter {
             }
         });
 
-        if (position + 2 >= cursor.getCount())
+        if (position + 2 >= cursor.getCount()){
+            vViewHolder.mImage3.setImageDrawable(null);
+            vViewHolder.mImage3.setVisibility(View.INVISIBLE);
             return;
+        } else
+            vViewHolder.mImage3.setVisibility(View.VISIBLE);
 
         cursor.moveToPosition(position + 2);
 
@@ -298,6 +333,7 @@ public class MovieAdapter extends CursorAdapter {
                 vBundle.putLong(ID, cursor.getLong(cursor.getColumnIndex(MovieTableHelper._ID)));
                 vI.putExtras(vBundle);
                 context.startActivity(vI);
+                mListener.onListViewItemSelected(true);
             }
         });
 
@@ -319,7 +355,12 @@ public class MovieAdapter extends CursorAdapter {
         });
 
         if (position + 3 >= cursor.getCount())
+        {
+            vViewHolder.mImage4.setImageDrawable(null);
+            vViewHolder.mImage4.setVisibility(View.INVISIBLE);
             return;
+        } else
+            vViewHolder.mImage4.setVisibility(View.VISIBLE);
 
         cursor.moveToPosition(position + 3);
 
@@ -338,6 +379,7 @@ public class MovieAdapter extends CursorAdapter {
                 vBundle.putLong(ID, cursor.getLong(cursor.getColumnIndex(MovieTableHelper._ID)));
                 vI.putExtras(vBundle);
                 context.startActivity(vI);
+                mListener.onListViewItemSelected(true);
             }
         });
 
@@ -358,5 +400,23 @@ public class MovieAdapter extends CursorAdapter {
             }
         });
     }
+
+    private class ViewHolder {
+
+        ImageView mImage1, mImage2, mImage3, mImage4;
+
+        public ViewHolder(View view) {
+            mImage1 = view.findViewById(R.id.imageViewColumn1);
+            mImage2 = view.findViewById(R.id.imageViewColumn2);
+            mImage3 = view.findViewById(R.id.imageViewColumn3);
+            mImage4 = view.findViewById(R.id.imageViewColumn4);
+        }
+    }
+
+
+    public interface IMovieAdapter{
+        void onListViewItemSelected(boolean aResponse);
+    }
+
 
 }

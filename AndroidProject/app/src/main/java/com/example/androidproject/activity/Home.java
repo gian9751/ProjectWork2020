@@ -44,7 +44,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import static com.example.androidproject.localdata.MovieTableHelper.PAGE;
 
-public class Home extends AppCompatActivity implements IWebService, LoaderManager.LoaderCallbacks<Cursor> {
+public class Home extends AppCompatActivity implements IWebService, LoaderManager.LoaderCallbacks<Cursor>, MovieAdapter.IMovieAdapter {
 
     private static final int MY_LOADER_ID = 0;
 
@@ -55,6 +55,8 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
     FloatingActionButton mFABFavorites;
     View footerView;
     SearchView mSearchView;
+
+    Menu mMenu;
 
     int mPage;
 
@@ -195,11 +197,13 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
     public boolean onCreateOptionsMenu(final Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.kebab_menu, menu);
-        getMenuInflater().inflate(R.menu.search_bar, menu);
+        inflater.inflate(R.menu.search_bar, menu);
         // Retrieve the SearchView and plug it into SearchManager
         mSearchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
         SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+
+        mMenu = menu;
 
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -207,9 +211,7 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
                 if (!query.equals("")) {
                     Cursor vCursor = getContentResolver().query(Provider.MOVIES_URI, null, MovieTableHelper.TITLE + " LIKE '%" + query + "%'", null, null);
                     mAdapter.swapCursor(vCursor);
-                    mSearchView.setQuery("",false);
-                    mSearchView.setIconified(true);
-                    MenuItemCompat.collapseActionView(menu.getItem(0));
+                    mSearchView.clearFocus();
                 }
                 return true;
             }
@@ -223,12 +225,13 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
                 return true;
             }
         });
-
-        //if (mSearchView.getOnFocusChangeListener().onFocusChange(mSearchView,true))
-
-
-
         return true;
+    }
+
+    private void chiudiSearchBar() {
+        mSearchView.setQuery("",false);
+        mSearchView.setIconified(true);
+        MenuItemCompat.collapseActionView(mMenu.getItem(1));
     }
 
     @Override
@@ -240,5 +243,11 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onListViewItemSelected(boolean aResponse) {
+        if (!mSearchView.isIconified())
+            chiudiSearchBar();
     }
 }
