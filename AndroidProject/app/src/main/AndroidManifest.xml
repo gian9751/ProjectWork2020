@@ -13,6 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".activity.MovieDetail"></activity>
+        <activity android:name=".activity.Credits"></activity>
         <activity android:name=".activity.Home">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

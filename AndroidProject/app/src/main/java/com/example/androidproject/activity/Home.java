@@ -12,6 +12,7 @@ import androidx.loader.content.Loader;
 import android.app.SearchManager;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
@@ -195,7 +196,7 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
     public boolean onCreateOptionsMenu(final Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.kebab_menu, menu);
-        getMenuInflater().inflate(R.menu.search_bar, menu);
+        inflater.inflate(R.menu.search_bar, menu);
         // Retrieve the SearchView and plug it into SearchManager
         mSearchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
         SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
@@ -235,7 +236,7 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_credits:
-                Toast.makeText(this, "Credits", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(Home.this, Credits.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
