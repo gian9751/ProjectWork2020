@@ -77,26 +77,7 @@ public class MovieAdapter extends CursorAdapter {
             if (mContext.getResources().getConfiguration().orientation==1)
                 return (getCursor().getCount()%2==0)?getCursor().getCount()/2:getCursor().getCount()/2+1;
             else
-                if (getCursor().getCount()%4==0)
-                    // nel caso sia divisibile per 4 ritorno la grandezza diviso 4
-                    return getCursor().getCount()/4;
-                else {
-                    // altrimenti divido la grandezza per quattro e prendo solo il valore decimale
-                    // se il valore decimale è minore di 0.30 significa che ho un poster in più
-                    // se il valore decimale è maggiore di 0.60 significa che ho tre poster in più
-                    // se il valore decimale non è minore di 0.30 e non è maggiore di 0.60 significa che ho due poster in più
-
-                    double vCursorSize = getCursor().getCount()/4;
-                    double vCursorSizeFractional = vCursorSize - (long)vCursorSize;
-
-                    if (vCursorSizeFractional < 0.30)
-                        return getCursor().getCount() / 4 + 1;
-                    else if (vCursorSizeFractional > 0.60)
-                        return getCursor().getCount() / 4 + 3;
-                    else
-                        return getCursor().getCount() / 4 + 2;
-                }
-
+                return (getCursor().getCount()%4==0)?getCursor().getCount()/4:getCursor().getCount()/4+1;
         else
             return 0;
     }
