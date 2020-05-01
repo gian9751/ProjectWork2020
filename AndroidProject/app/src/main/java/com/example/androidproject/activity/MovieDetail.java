@@ -41,13 +41,13 @@ public class MovieDetail extends AppCompatActivity {
 
     RequestOptions mRequestOptions;
 
-    TextView mTextViewTitle, mTextViewPlot;
-    ImageView mImageViewPoster, mImageViewCover;
+    TextView mTextViewTitle, mTextViewPlot, mReleaseDate, mUserScore;
+    ImageView mImageViewPoster, mImageViewCover, mImageViewReleaseDate, mImageViewUserScore;
     FloatingActionButton mFabAddFavourite;
 
     //TEST
     ViewFlipper mViewFlipper;
-    BlurView mBlurView;
+
     //TEST
 
     @Override
@@ -63,6 +63,10 @@ public class MovieDetail extends AppCompatActivity {
         mTextViewPlot = findViewById(R.id.text_plot);
         mTextViewTitle = findViewById(R.id.text_title);
         mFabAddFavourite = findViewById(R.id.fab_add_favorite);
+        mReleaseDate = findViewById(R.id.releaseDate_text);
+        mUserScore = findViewById(R.id.userScoreText);
+        mImageViewReleaseDate = findViewById(R.id.calendar_icon);
+        mImageViewUserScore = findViewById(R.id.userScore_icon);
 
         mRequestOptions = new RequestOptions();
         mRequestOptions.placeholder(R.drawable.ic_movie_placeholder);
@@ -79,6 +83,8 @@ public class MovieDetail extends AppCompatActivity {
                 String vPlot = vCursor.getString(vCursor.getColumnIndex(MovieTableHelper.PLOT));
                 String vImageCover = vCursor.getString(vCursor.getColumnIndex(MovieTableHelper.BACKDROP_PATH));
                 String vImagePoster = vCursor.getString(vCursor.getColumnIndex(MovieTableHelper.POSTER_PATH));
+                String vReleaseDate = vCursor.getString(vCursor.getColumnIndex(MovieTableHelper.RELEASE_DATE));
+                Double vUserScore = vCursor.getDouble(vCursor.getColumnIndex(MovieTableHelper.USER_SCORE));
                 int vFavorite = vCursor.getInt(vCursor.getColumnIndex(MovieTableHelper.FAVOURITE));
                 Log.d("Cover", vImageCover);
 
@@ -98,6 +104,10 @@ public class MovieDetail extends AppCompatActivity {
 
                 mTextViewTitle.setText(vTitolo + "");
                 mTextViewPlot.setText(vPlot + "");
+                mReleaseDate.setText(vReleaseDate + "");
+                mUserScore.setText(vUserScore + "/10");
+
+                toastMessage();
 
                 if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
                     landscape();
@@ -135,8 +145,38 @@ public class MovieDetail extends AppCompatActivity {
             }
         });
 
-        //imageflipper per landscape
 
+
+    }
+
+    private void toastMessage() {
+        mReleaseDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MovieDetail.this, "Release date", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        mImageViewReleaseDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MovieDetail.this, "Release date", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        mUserScore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MovieDetail.this, "User score", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        mImageViewUserScore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MovieDetail.this, "User score", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void landscape(){

@@ -148,6 +148,8 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
                         vValues.put(MovieTableHelper.PLOT, movie.getOverview());
                         vValues.put(MovieTableHelper.POSTER_PATH, "https://image.tmdb.org/t/p/w500" + movie.getPosterPath());
                         vValues.put(MovieTableHelper.BACKDROP_PATH,"https://image.tmdb.org/t/p/w500" + movie.getBackdropPath());
+                        vValues.put(MovieTableHelper.RELEASE_DATE, movie.getReleaseDate());
+                        vValues.put(MovieTableHelper.USER_SCORE, movie.getVoteAverage());
                         vValues.put(PAGE, response.getPage());
                         Log.d("asda", "insert" +  movie.getId());
 

@@ -10,9 +10,10 @@
     <ImageView
         android:id="@+id/imageViewColumn1"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="280dp"
         android:layout_margin="10dp"
         android:focusable="true"
+        android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/imageViewColumn2"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,7 +23,8 @@
     <ImageView
         android:id="@+id/imageViewColumn2"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="280dp"
+        android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/imageViewColumn1"
         app:layout_constraintEnd_toEndOf="parent"
