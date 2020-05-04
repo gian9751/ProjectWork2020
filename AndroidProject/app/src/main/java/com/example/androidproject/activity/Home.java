@@ -48,16 +48,18 @@ import static com.example.androidproject.localdata.MovieTableHelper.PAGE;
 public class Home extends AppCompatActivity implements IWebService, LoaderManager.LoaderCallbacks<Cursor>, MovieAdapter.IMovieAdapter {
 
     private static final int MY_LOADER_ID = 0;
+    private static final String QUERY = "QUERY" ;
 
     private WebService mWebService;
 
     ListView mListView;
     MovieAdapter mAdapter;
     FloatingActionButton mFABFavorites;
-    View footerView;
+    View mFooterView;
     SearchView mSearchView;
 
-    Menu mMenu;
+    MenuItem mMenuItem;
+    String mQuery;
 
     int mPage;
 
@@ -68,16 +70,19 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
 
         getSupportActionBar().setTitle("CineWave");
 
-        if (savedInstanceState != null) {
-            mPage = savedInstanceState.getInt(PAGE);
-        }
-
-        mWebService = WebService.getInstance();
-
         mListView = findViewById(R.id.listView);
         mFABFavorites = findViewById(R.id.fab_favorite_list);
         LayoutInflater li = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        footerView = li.inflate(R.layout.footer_view, null);
+        mFooterView = li.inflate(R.layout.footer_view, null);
+
+        if (savedInstanceState != null) {
+            mPage = savedInstanceState.getInt(PAGE);
+
+            if (savedInstanceState.getString(QUERY)!=null)
+                mQuery = savedInstanceState.getString(QUERY);
+        }
+
+        mWebService = WebService.getInstance();
 
         gestioneDellePage();
 
@@ -110,12 +115,12 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
                 if (getResources().getConfiguration().orientation==1){
                     if (view.getLastVisiblePosition()/10 == mPage-1) {
                         loadMovie(++mPage);
-                        mListView.addFooterView(footerView);
+                        mListView.addFooterView(mFooterView);
                     }
                 } else {
                     if (view.getLastVisiblePosition() / 5 == mPage - 1) {
                         loadMovie(++mPage);
-                        mListView.addFooterView(footerView);
+                        mListView.addFooterView(mFooterView);
                     }
                 }
             }
@@ -176,8 +181,8 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
 
     @Override
     public void onDiscoverMovieFetched(boolean success, DiscoverMovieResponse response, int errorCode, String errorMessage) {
-        if (mListView.getFooterViewsCount()==1)
-            mListView.removeFooterView(footerView);
+        if (mListView.getFooterViewsCount()>0)
+            mListView.removeFooterView(mFooterView);
     }
 
     @NonNull
@@ -200,6 +205,8 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(PAGE, mPage);
+        if (!mSearchView.isIconified())
+            outState.putString(QUERY,mSearchView.getQuery().toString());
     }
 
 
@@ -209,11 +216,12 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
         inflater.inflate(R.menu.kebab_menu, menu);
         inflater.inflate(R.menu.search_bar, menu);
         // Retrieve the SearchView and plug it into SearchManager
+
         mSearchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
         SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 
-        mMenu = menu;
+        mMenuItem = menu.findItem(R.id.action_search);
 
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -231,17 +239,43 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
                 if (!newText.equals("")) {
                     Cursor vCursor = getContentResolver().query(Provider.MOVIES_URI, null, MovieTableHelper.TITLE + " LIKE '%" + newText+"%'", null, null);
                     mAdapter.swapCursor(vCursor);
+                }else{
+                    Cursor vCursor = getContentResolver().query(Provider.MOVIES_URI,null,null,null, PAGE + " ASC");
+                    mAdapter.swapCursor(vCursor);
                 }
+
                 return true;
             }
         });
+
+        menu.findItem(R.id.action_search).setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem menuItem) {
+                Log.d("ciao","onMenuItemActionExpand");
+                if (mListView.getFooterViewsCount()>0)
+                    mFooterView.setVisibility(View.GONE);
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem menuItem) {
+                Log.d("ciao","onMenuItemActionCollapse");
+                Cursor vCursor = getContentResolver().query(Provider.MOVIES_URI, null, null, null, PAGE + " ASC");
+                mAdapter.swapCursor(vCursor);
+                if (mListView.getFooterViewsCount() > 0)
+                    mFooterView.setVisibility(View.VISIBLE);
+
+                return true;
+            }
+        });
+
         return true;
     }
 
     private void chiudiSearchBar() {
         mSearchView.setQuery("",false);
         mSearchView.setIconified(true);
-        MenuItemCompat.collapseActionView(mMenu.getItem(1));
+        mMenuItem.collapseActionView();
     }
 
     @Override

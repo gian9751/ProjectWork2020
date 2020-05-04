@@ -248,9 +248,16 @@ public class MovieAdapter extends CursorAdapter {
         if (position + 1 >= cursor.getCount()){
             vViewHolder.mImage2.setImageDrawable(null);
             vViewHolder.mImage2.setVisibility(View.INVISIBLE);
+            vViewHolder.mImage3.setImageDrawable(null);
+            vViewHolder.mImage3.setVisibility(View.INVISIBLE);
+            vViewHolder.mImage4.setImageDrawable(null);
+            vViewHolder.mImage4.setVisibility(View.INVISIBLE);
             return;
-        } else
+        } else {
             vViewHolder.mImage2.setVisibility(View.VISIBLE);
+            vViewHolder.mImage3.setVisibility(View.VISIBLE);
+            vViewHolder.mImage4.setVisibility(View.VISIBLE);
+        }
 
         cursor.moveToPosition(position + 1);
 
@@ -293,9 +300,13 @@ public class MovieAdapter extends CursorAdapter {
         if (position + 2 >= cursor.getCount()){
             vViewHolder.mImage3.setImageDrawable(null);
             vViewHolder.mImage3.setVisibility(View.INVISIBLE);
+            vViewHolder.mImage4.setImageDrawable(null);
+            vViewHolder.mImage4.setVisibility(View.INVISIBLE);
             return;
-        } else
+        } else {
             vViewHolder.mImage3.setVisibility(View.VISIBLE);
+            vViewHolder.mImage4.setVisibility(View.VISIBLE);
+        }
 
         cursor.moveToPosition(position + 2);
 
