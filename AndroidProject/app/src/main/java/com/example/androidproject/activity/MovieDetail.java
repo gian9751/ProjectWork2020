@@ -41,10 +41,9 @@ public class MovieDetail extends AppCompatActivity {
     ImageView mImageViewPoster, mImageViewCover, mImageViewReleaseDate, mImageViewUserScore;
     FloatingActionButton mFabAddFavourite;
 
-    //TEST
+
     ViewFlipper mViewFlipper;
 
-    //TEST
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +51,8 @@ public class MovieDetail extends AppCompatActivity {
         setContentView(R.layout.activity_movie_detail);
 
         getSupportActionBar().setTitle("Movie details");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
 
         mImageViewCover = findViewById(R.id.img_cover);
@@ -102,6 +103,7 @@ public class MovieDetail extends AppCompatActivity {
                 mTextViewPlot.setText(vPlot + "");
                 mReleaseDate.setText(vReleaseDate + "");
                 mUserScore.setText(vUserScore + "/10");
+                getSupportActionBar().setSubtitle(vTitolo);
 
                 toastMessage();
 
@@ -186,5 +188,11 @@ public class MovieDetail extends AppCompatActivity {
             mViewFlipper.setOutAnimation(out);
             mViewFlipper.setAutoStart(true);
             mViewFlipper.setFlipInterval(3000);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }
