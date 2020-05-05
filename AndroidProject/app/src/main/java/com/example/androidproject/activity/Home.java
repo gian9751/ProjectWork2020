@@ -183,8 +183,8 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
             }
 
             mPage=1;
-            loadMovie(++mPage);
             loadMovie(mPage);
+            loadMovie(++mPage);
 
         }else{
             Cursor vCursor = getContentResolver().query(Provider.MOVIES_URI,null,null,null, PAGE + " DESC");
