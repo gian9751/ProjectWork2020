@@ -13,6 +13,7 @@ public class MovieTableHelper implements BaseColumns {
     public static final String PAGE = "page";
     public static final String RELEASE_DATE = "release_date"; //data di rilascio
     public static final String USER_SCORE = "user_score"; //punteggio utenti
+    public static final String LOAD_DATE = "date_load"; // data di caricamento del record
 
     public static final String CREATE = "CREATE TABLE " + TABLE_NAME + " ( " +
             _ID + " INTEGER PRIMARY KEY, " +
@@ -22,6 +23,7 @@ public class MovieTableHelper implements BaseColumns {
             BACKDROP_PATH + " TEXT, " +
             RELEASE_DATE + " TEXT, " +
             USER_SCORE + " TEXT, " +
+            LOAD_DATE + " TEXT, " +
             FAVOURITE + " INTEGER DEFAULT 0, " +
             PAGE + " INTEGER);";
 

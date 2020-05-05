@@ -12,30 +12,23 @@ import androidx.loader.content.Loader;
 import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -47,11 +40,12 @@ import com.example.androidproject.data.models.Movie;
 import com.example.androidproject.data.services.IWebService;
 import com.example.androidproject.data.services.WebService;
 import com.example.androidproject.fragment.DialogPreferiti;
-import com.example.androidproject.internetManagement.NetworkChangeReceiver;
+import com.example.androidproject.broadcastReceiver.NetworkChangeReceiver;
 import com.example.androidproject.localdata.MovieTableHelper;
 import com.example.androidproject.localdata.Provider;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import static com.example.androidproject.localdata.MovieTableHelper.LOAD_DATE;
 import static com.example.androidproject.localdata.MovieTableHelper.PAGE;
 
 public class Home extends AppCompatActivity implements IWebService, LoaderManager.LoaderCallbacks<Cursor>, MovieAdapter.IMovieAdapter {
@@ -87,13 +81,15 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
         mFooterView = li.inflate(R.layout.footer_view, null);
 
         if (savedInstanceState != null) {
-            //mPage = savedInstanceState.getInt(PAGE);
+            mPage = savedInstanceState.getInt(PAGE);
 
             if (savedInstanceState.getString(QUERY)!=null)
                 mQuery = savedInstanceState.getString(QUERY);
         }
 
         mWebService = WebService.getInstance();
+
+        controlloDataDeiDati();
 
         gestioneDellePage();
 
@@ -111,6 +107,30 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
         getSupportLoaderManager().initLoader(MY_LOADER_ID,null,this);
 
         gestioneDellEndlessScroll();
+    }
+
+    private void controlloDataDeiDati() {
+        if (getContentResolver().query(Provider.MOVIES_URI,null, MovieTableHelper.PAGE+"!= -1",null,null).getCount()!=0) {
+
+            //prendo i record in ordine per page (partendo da page 1)
+            Cursor vCursor = getContentResolver().query(Provider.MOVIES_URI,null,MovieTableHelper.PAGE+"!= -1",null, PAGE + " ASC");
+            vCursor.moveToNext();
+            long vDataDiCaricamento = Long.parseLong(vCursor.getString(vCursor.getColumnIndex(LOAD_DATE))); // data di caricamento in millisecondi del primo record
+            long vNow = System.currentTimeMillis(); // data attuale in millisecondi
+
+            long vDiffMillis = vNow - vDataDiCaricamento; // differnza in millisecondi tra la data attuale e la data di caricamento
+            if (vDiffMillis >= (1000*60*60*24)) { // se la differenza tra i due è uguale a 24 ore trasformate in millisecondi
+                getContentResolver().delete(Provider.MOVIES_URI, MovieTableHelper.FAVOURITE + "=0", null); // allora resetto il mio database
+
+                // ora nel mio database sono rimasti solo i film preferiti
+                // per evitare che incasinino la listview li salvo con una page
+                // che non può essere assegnata a nessun gruppo di film, ovvero -1
+                ContentValues vValues = new ContentValues();
+                vValues.put(PAGE, -1);
+                getContentResolver().update(Provider.MOVIES_URI,vValues,null,null);
+
+            }
+        }
     }
 
     private boolean checkConnection() {
@@ -150,7 +170,7 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
     }
 
     private void gestioneDellePage() {
-        if (getContentResolver().query(Provider.MOVIES_URI,null,null,null,null).getCount()==0){
+        if (getContentResolver().query(Provider.MOVIES_URI,null,MovieTableHelper.PAGE+"!= -1",null,null).getCount()==0){
             if (!checkConnection()){
                 new AlertDialog.Builder(Home.this)
                         .setTitle("No internet connection available")
@@ -187,7 +207,8 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
             loadMovie(++mPage);
 
         }else{
-            Cursor vCursor = getContentResolver().query(Provider.MOVIES_URI,null,null,null, PAGE + " DESC");
+            //prendo i record in ordine per page (partendo dall'ultima page)
+            Cursor vCursor = getContentResolver().query(Provider.MOVIES_URI,null,MovieTableHelper.PAGE+"!= -1",null, PAGE + " DESC");
             vCursor.moveToNext();
             mPage = vCursor.getInt(vCursor.getColumnIndex(PAGE));
         }
@@ -221,7 +242,9 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
                         vValues.put(MovieTableHelper.RELEASE_DATE, movie.getReleaseDate());
                         vValues.put(MovieTableHelper.USER_SCORE, movie.getVoteAverage());
                         vValues.put(PAGE, response.getPage());
-                        Log.d("asda", "insert" +  movie.getId());
+
+                        long vDataDiCaricamento = System.currentTimeMillis();
+                        vValues.put(MovieTableHelper.LOAD_DATE,vDataDiCaricamento);
 
                         Uri vResultUri = getContentResolver().insert(Provider.MOVIES_URI, vValues);
                         Log.d("asda", "insert" +  vResultUri);
@@ -247,7 +270,7 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
     @NonNull
     @Override
     public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
-        return new CursorLoader(this, Provider.MOVIES_URI,null,null,null, PAGE + " ASC");
+        return new CursorLoader(this, Provider.MOVIES_URI,null,MovieTableHelper.PAGE+"!= -1",null, PAGE + " ASC");
     }
 
     @Override
@@ -299,7 +322,7 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
                     Cursor vCursor = getContentResolver().query(Provider.MOVIES_URI, null, MovieTableHelper.TITLE + " LIKE '%" + newText+"%'", null, null);
                     mAdapter.swapCursor(vCursor);
                 }else{
-                    Cursor vCursor = getContentResolver().query(Provider.MOVIES_URI,null,null,null, PAGE + " ASC");
+                    Cursor vCursor = getContentResolver().query(Provider.MOVIES_URI,null,MovieTableHelper.PAGE+"!= -1",null, PAGE + " ASC");
                     mAdapter.swapCursor(vCursor);
                 }
 
@@ -319,7 +342,7 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
             @Override
             public boolean onMenuItemActionCollapse(MenuItem menuItem) {
                 Log.d("ciao","onMenuItemActionCollapse");
-                Cursor vCursor = getContentResolver().query(Provider.MOVIES_URI, null, null, null, PAGE + " ASC");
+                Cursor vCursor = getContentResolver().query(Provider.MOVIES_URI, null, MovieTableHelper.PAGE+"!= -1", null, PAGE + " ASC");
                 mAdapter.swapCursor(vCursor);
                 if (mListView.getFooterViewsCount() > 0)
                     mFooterView.setVisibility(View.VISIBLE);

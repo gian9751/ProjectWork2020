@@ -1,4 +1,4 @@
-package com.example.androidproject.internetManagement;
+package com.example.androidproject.broadcastReceiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
