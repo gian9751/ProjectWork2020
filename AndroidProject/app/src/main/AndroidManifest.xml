@@ -25,7 +25,8 @@
         android:theme="@style/AppTheme">
         <activity android:name=".activity.MovieDetail"></activity>
         <activity android:name=".activity.Credits"></activity>
-        <activity android:name=".activity.Home">
+        <activity android:name=".activity.Home"></activity>
+        <activity android:name=".activity.Splash" android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

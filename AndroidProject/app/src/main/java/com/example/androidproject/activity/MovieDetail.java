@@ -29,10 +29,6 @@ import com.example.androidproject.localdata.MovieTableHelper;
 import com.example.androidproject.localdata.Provider;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-
-import eightbitlab.com.blurview.BlurView;
-import eightbitlab.com.blurview.RenderScriptBlur;
-
 import static android.os.Build.ID;
 
 public class MovieDetail extends AppCompatActivity {
