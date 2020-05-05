@@ -28,17 +28,35 @@
         android:scaleType="centerCrop"
         />
 
-        <ImageView
-            android:id="@+id/img_poster"
+        <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:adjustViewBounds="true"
-            android:contentDescription="@string/default_image_content_description"
-            android:src="@drawable/ic_movie_placeholder"
-            android:layout_centerVertical="true"
-            android:scaleType="centerCrop"
-            android:layout_gravity="center"
-            android:elevation="20dp"/>
+            android:layout_height="match_parent">
+
+
+            <ImageView
+                android:id="@+id/img_blurredBackground"
+                android:layout_width="300dp"
+                android:layout_height="match_parent"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/default_image_content_description"
+                android:src="@drawable/ic_movie_placeholder"
+                android:scaleType="centerCrop"
+                android:layout_centerHorizontal="true"/>
+
+            <ImageView
+                android:id="@+id/img_poster"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/default_image_content_description"
+                android:src="@drawable/ic_movie_placeholder"
+                android:layout_centerVertical="true"
+                android:scaleType="center"
+                android:layout_centerHorizontal="true"
+                android:elevation="1dp"/>
+        </RelativeLayout>
+
+
 
     </ViewFlipper>
 
