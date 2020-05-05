@@ -9,16 +9,19 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -36,6 +39,9 @@ import com.example.androidproject.localdata.MovieTableHelper;
 import com.example.androidproject.localdata.Provider;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+
+import jp.wasabeef.glide.transformations.BlurTransformation;
+
 import static android.os.Build.ID;
 
 public class MovieDetail extends AppCompatActivity {
@@ -45,13 +51,11 @@ public class MovieDetail extends AppCompatActivity {
     RequestOptions mRequestOptions;
 
     TextView mTextViewTitle, mTextViewPlot, mReleaseDate, mUserScore;
-    ImageView mImageViewPoster, mImageViewCover, mImageViewReleaseDate, mImageViewUserScore;
+    ImageView mImageViewPoster, mImageViewCover, mImageViewReleaseDate, mImageViewUserScore, mImageBlurredBack;
     FloatingActionButton mFabAddFavourite;
 
-    //TEST
-    ViewFlipper mViewFlipper;
 
-    //TEST
+    ViewFlipper mViewFlipper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +63,8 @@ public class MovieDetail extends AppCompatActivity {
         setContentView(R.layout.activity_movie_detail);
 
         getSupportActionBar().setTitle("Movie details");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
 
         mImageViewCover = findViewById(R.id.img_cover);
@@ -109,11 +115,13 @@ public class MovieDetail extends AppCompatActivity {
                 mTextViewPlot.setText(vPlot + "");
                 mReleaseDate.setText(vReleaseDate + "");
                 mUserScore.setText(vUserScore + "/10");
+                getSupportActionBar().setSubtitle(vTitolo);
 
                 toastMessage();
 
                 if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                    landscape();
+                    landscape(vImagePoster);
+
                 }
 
                 if (vFavorite==1){
@@ -187,9 +195,10 @@ public class MovieDetail extends AppCompatActivity {
         });
     }
 
-    private void landscape(){
+    private void landscape(String vImagePoster){
 
             mViewFlipper = findViewById(R.id.imageFlipper);
+            mImageBlurredBack = findViewById(R.id.img_blurredBackground);
 
 
             Animation in = AnimationUtils.loadAnimation(this, android.R.anim.slide_in_left);
@@ -198,6 +207,22 @@ public class MovieDetail extends AppCompatActivity {
             mViewFlipper.setOutAnimation(out);
             mViewFlipper.setAutoStart(true);
             mViewFlipper.setFlipInterval(3000);
+
+        Glide
+                .with(MovieDetail.this)
+                .setDefaultRequestOptions(mRequestOptions)
+                .load(vImagePoster)
+                .apply(RequestOptions.bitmapTransform(new BlurTransformation(25, 3)))
+                .into(mImageBlurredBack);
+
+
+
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 
     private boolean checkConnection() {
