@@ -40,11 +40,11 @@ public class Splash extends AppCompatActivity {
     }
 
     private void wave() {
-        waveFooter.setVelocity(1);
+        waveFooter.setVelocity(2);
         waveFooter.setProgress(1);
         waveFooter.isRunning();
         waveFooter.setGradientAngle(45);
-        waveFooter.setWaveHeight(40);
+        waveFooter.setWaveHeight(70);
         waveFooter.setStartColor(Color.BLUE);
         waveFooter.setCloseColor(Color.CYAN);
     }
