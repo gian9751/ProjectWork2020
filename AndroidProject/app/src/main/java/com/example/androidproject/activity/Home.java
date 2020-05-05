@@ -11,6 +11,7 @@ import androidx.loader.content.Loader;
 
 import android.app.AlertDialog;
 import android.app.SearchManager;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
@@ -69,7 +70,9 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
     MenuItem mMenuItem;
     String mQuery;
 
-    int mPage;
+    public int mPage;
+
+    public NetworkChangeReceiver mNetworkReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,17 +87,13 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
         mFooterView = li.inflate(R.layout.footer_view, null);
 
         if (savedInstanceState != null) {
-            mPage = savedInstanceState.getInt(PAGE);
+            //mPage = savedInstanceState.getInt(PAGE);
 
             if (savedInstanceState.getString(QUERY)!=null)
                 mQuery = savedInstanceState.getString(QUERY);
         }
 
         mWebService = WebService.getInstance();
-
-        NetworkChangeReceiver changeReceiver = new NetworkChangeReceiver();
-        IntentFilter filter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
-        this.registerReceiver(changeReceiver,filter);
 
         gestioneDellePage();
 
@@ -134,13 +133,14 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 Log.d("Page scroll", ""+view.getLastVisiblePosition());
 
+
                 if (getResources().getConfiguration().orientation==1){
                     if (view.getLastVisiblePosition()/10 == mPage-1) {
                         loadMovie(++mPage);
                         mListView.addFooterView(mFooterView);
                     }
                 } else {
-                    if (view.getLastVisiblePosition() / 5 == mPage - 1) {
+                    if (view.getLastVisiblePosition() / 5 == mPage-1) {
                         loadMovie(++mPage);
                         mListView.addFooterView(mFooterView);
                     }
@@ -175,19 +175,28 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
                         //.setIcon(android.R.drawable.ic_dialog_alert)
                         .show();
 
+                mNetworkReceiver = new NetworkChangeReceiver();
+                IntentFilter filter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
+                this.registerReceiver(mNetworkReceiver,filter);
+
                 return;
             }
 
-            mPage = 1;
-            loadMovie(mPage++);
+            mPage=1;
+            loadMovie(++mPage);
             loadMovie(mPage);
 
         }else{
             Cursor vCursor = getContentResolver().query(Provider.MOVIES_URI,null,null,null, PAGE + " DESC");
             vCursor.moveToNext();
             mPage = vCursor.getInt(vCursor.getColumnIndex(PAGE));
-            Log.d("Page", mPage+"");
         }
+    }
+
+    @Override
+    public void unregisterReceiver(BroadcastReceiver receiver) {
+        super.unregisterReceiver(receiver);
+        mPage = 2;
     }
 
     @Override
@@ -197,7 +206,7 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
 
     }
 
-    private void loadMovie(int page) {
+    public void loadMovie(int page) {
         mWebService.getDiscoverMovie(page, new IWebService() {
             @Override
             public void onDiscoverMovieFetched(boolean success, DiscoverMovieResponse response, int errorCode, String errorMessage) {
@@ -221,7 +230,8 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
                 }else{
                     Toast.makeText(Home.this,"Caricamento dei film non riuscito: "+ errorMessage, Toast.LENGTH_SHORT).show();
                     Log.d("errore: ", errorMessage + "codice errore: "+ errorCode);
-                    //setContentView(R.layout.activity_movie_detail);
+
+                    //if ()
                 }
             }
         });
