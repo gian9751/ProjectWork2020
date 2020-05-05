@@ -2,13 +2,20 @@ package com.example.androidproject.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,7 +74,7 @@ public class MovieDetail extends AppCompatActivity {
         mRequestOptions = new RequestOptions();
         mRequestOptions.placeholder(R.drawable.ic_movie_placeholder);
 
-
+        controlloConnessione();
 
         if (getIntent().getExtras() != null)
             mId = getIntent().getExtras().getLong(ID);
@@ -145,6 +152,11 @@ public class MovieDetail extends AppCompatActivity {
 
     }
 
+    private void controlloConnessione() {
+        if (!checkConnection())
+            Toast.makeText(this,"La tua connessione dati è disattivata, l'immagine backdrop potrebbe non visualizzarsi!",Toast.LENGTH_LONG).show();
+    }
+
     private void toastMessage() {
         mReleaseDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -186,5 +198,15 @@ public class MovieDetail extends AppCompatActivity {
             mViewFlipper.setOutAnimation(out);
             mViewFlipper.setAutoStart(true);
             mViewFlipper.setFlipInterval(3000);
+    }
+
+    private boolean checkConnection() {
+        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
+            return true;
+        }
+        else
+            return false;
     }
 }

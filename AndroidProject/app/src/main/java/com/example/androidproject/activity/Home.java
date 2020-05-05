@@ -64,9 +64,10 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
     MenuItem mMenuItem;
     String mQuery;
 
-    public int mPage;
+    int mPage;
 
-    public NetworkChangeReceiver mNetworkReceiver;
+    //public NetworkChangeReceiver mNetworkReceiver;
+    int mCase = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +94,9 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
 
         gestioneDellePage();
 
+        controlloConnessioneInternet();
+
+
         mAdapter = new MovieAdapter(Home.this,null);
         mListView.setAdapter(mAdapter);
 
@@ -109,8 +113,13 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
         gestioneDellEndlessScroll();
     }
 
+    private void controlloConnessioneInternet() {
+        if (!checkConnection()&&mCase==-1)
+            showAlert("if you want to see more movies, turn on the connection","No internet connection available");
+    }
+
     private void controlloDataDeiDati() {
-        if (getContentResolver().query(Provider.MOVIES_URI,null, MovieTableHelper.PAGE+"!= -1",null,null).getCount()!=0) {
+        if (getContentResolver().query(Provider.MOVIES_URI,null, MovieTableHelper.PAGE+"!= -1",null,null).getCount()!=0&&checkConnection()) {
 
             //prendo i record in ordine per page (partendo da page 1)
             Cursor vCursor = getContentResolver().query(Provider.MOVIES_URI,null,MovieTableHelper.PAGE+"!= -1",null, PAGE + " ASC");
@@ -143,32 +152,6 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
           return false;
     }
 
-    private void gestioneDellEndlessScroll() {
-        mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-            }
-
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                Log.d("Page scroll", ""+view.getLastVisiblePosition());
-
-
-                if (getResources().getConfiguration().orientation==1){
-                    if (view.getLastVisiblePosition()/10 == mPage-1) {
-                        loadMovie(++mPage);
-                        mListView.addFooterView(mFooterView);
-                    }
-                } else {
-                    if (view.getLastVisiblePosition() / 5 == mPage-1) {
-                        loadMovie(++mPage);
-                        mListView.addFooterView(mFooterView);
-                    }
-                }
-            }
-        });
-    }
-
     private void gestioneDellePage() {
         if (getContentResolver().query(Provider.MOVIES_URI,null,MovieTableHelper.PAGE+"!= -1",null,null).getCount()==0){
             if (!checkConnection()){
@@ -195,9 +178,10 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
                         //.setIcon(android.R.drawable.ic_dialog_alert)
                         .show();
 
-                mNetworkReceiver = new NetworkChangeReceiver();
+                mCase = 1;
+                NetworkChangeReceiver vNetworkReceiver = new NetworkChangeReceiver(mCase);
                 IntentFilter filter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
-                this.registerReceiver(mNetworkReceiver,filter);
+                this.registerReceiver(vNetworkReceiver,filter);
 
                 return;
             }
@@ -214,10 +198,49 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
         }
     }
 
-    @Override
-    public void unregisterReceiver(BroadcastReceiver receiver) {
-        super.unregisterReceiver(receiver);
-        mPage = 2;
+    private void gestioneDellEndlessScroll() {
+        mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                Log.d("Page scroll", ""+view.getLastVisiblePosition());
+
+
+                if (getResources().getConfiguration().orientation==1){
+                    if (view.getLastVisiblePosition()/10 == mPage-1) {
+                        loadMovie(++mPage);
+                        mListView.addFooterView(mFooterView);
+                    }
+                } else {
+                    if (view.getLastVisiblePosition() / 5 == mPage-1) {
+                        loadMovie(++mPage);
+                        mListView.addFooterView(mFooterView);
+                    }
+                }
+            }
+        });
+    }
+
+    public void showAlert(String aMessage, String aTitle){
+        new AlertDialog.Builder(Home.this)
+                .setTitle(aTitle)
+                .setMessage(aMessage)
+                // Specifying a listener allows you to take an action before dismissing the dialog.
+                // The dialog is automatically dismissed when a dialog button is clicked.
+                .setPositiveButton("Open network settings", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent=new Intent(Settings.ACTION_NETWORK_OPERATOR_SETTINGS);
+                        startActivity(intent);
+                    }
+                })
+
+                // A null listener allows the button to dismiss the dialog and take no further action.
+                .setNegativeButton("Close", null)
+                //.setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 
     @Override
@@ -227,8 +250,8 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
 
     }
 
-    public void loadMovie(int page) {
-        mWebService.getDiscoverMovie(page, new IWebService() {
+    public void loadMovie(int aPage) {
+        mWebService.getDiscoverMovie(aPage, new IWebService() {
             @Override
             public void onDiscoverMovieFetched(boolean success, DiscoverMovieResponse response, int errorCode, String errorMessage) {
                 if (success){
@@ -252,9 +275,17 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
                     }
                 }else{
                     Toast.makeText(Home.this,"Caricamento dei film non riuscito: "+ errorMessage, Toast.LENGTH_SHORT).show();
-                    Log.d("errore: ", errorMessage + "codice errore: "+ errorCode);
 
-                    //if ()
+                    if (!checkConnection()&&mCase==-1){
+                        showAlert("Please turn on your connection if u want load the next page of movie", "No internet connection available");
+                        Cursor vCursor = getContentResolver().query(Provider.MOVIES_URI,null,MovieTableHelper.PAGE+"!= -1",null, PAGE + " DESC");
+                        vCursor.moveToNext();
+                        mPage = vCursor.getInt(vCursor.getColumnIndex(PAGE));
+                        mCase = 2;
+                        NetworkChangeReceiver vNetworkReceiver = new NetworkChangeReceiver(mCase);
+                        IntentFilter filter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
+                        registerReceiver(vNetworkReceiver,filter);
+                    }
                 }
             }
         });
@@ -375,5 +406,23 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
     public void onListViewItemSelected(boolean aResponse) {
         if (!mSearchView.isIconified())
             chiudiSearchBar();
+    }
+
+    @Override
+    public void unregisterReceiver(BroadcastReceiver receiver) {
+        super.unregisterReceiver(receiver);
+        switch (mCase){
+            case 1:
+                mPage = 1;
+                loadMovie(mPage);
+                loadMovie(++mPage);
+                mCase = -1;
+                break;
+            case 2:
+                loadMovie(++mPage);
+                mCase = -1;
+                break;
+        }
+
     }
 }
