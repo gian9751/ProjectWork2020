@@ -9,16 +9,23 @@ import androidx.loader.app.LoaderManager;
 import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
 
+import android.app.AlertDialog;
 import android.app.SearchManager;
+import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -39,6 +46,7 @@ import com.example.androidproject.data.models.Movie;
 import com.example.androidproject.data.services.IWebService;
 import com.example.androidproject.data.services.WebService;
 import com.example.androidproject.fragment.DialogPreferiti;
+import com.example.androidproject.internetManagement.NetworkChangeReceiver;
 import com.example.androidproject.localdata.MovieTableHelper;
 import com.example.androidproject.localdata.Provider;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -84,6 +92,10 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
 
         mWebService = WebService.getInstance();
 
+        NetworkChangeReceiver changeReceiver = new NetworkChangeReceiver();
+        IntentFilter filter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
+        this.registerReceiver(changeReceiver,filter);
+
         gestioneDellePage();
 
         mAdapter = new MovieAdapter(Home.this,null);
@@ -100,6 +112,16 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
         getSupportLoaderManager().initLoader(MY_LOADER_ID,null,this);
 
         gestioneDellEndlessScroll();
+    }
+
+    private boolean checkConnection() {
+        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
+            return true;
+        }
+        else
+          return false;
     }
 
     private void gestioneDellEndlessScroll() {
@@ -129,6 +151,33 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
 
     private void gestioneDellePage() {
         if (getContentResolver().query(Provider.MOVIES_URI,null,null,null,null).getCount()==0){
+            if (!checkConnection()){
+                new AlertDialog.Builder(Home.this)
+                        .setTitle("No internet connection available")
+                        .setMessage("Please turn on your connection to use app")
+
+                        // Specifying a listener allows you to take an action before dismissing the dialog.
+                        // The dialog is automatically dismissed when a dialog button is clicked.
+                        .setPositiveButton("open network settings", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent=new Intent(Settings.ACTION_NETWORK_OPERATOR_SETTINGS);
+                                startActivity(intent);
+                            }
+                        })
+
+                        // A null listener allows the button to dismiss the dialog and take no further action.
+                        .setNegativeButton("close app", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                onBackPressed();
+                            }
+                        })
+                        //.setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+
+                return;
+            }
+
             mPage = 1;
             loadMovie(mPage++);
             loadMovie(mPage);
