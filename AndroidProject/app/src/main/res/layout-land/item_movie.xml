@@ -20,6 +20,14 @@
         />
 
     <ImageView
+        android:id="@+id/imageViewFavourite1"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        app:layout_constraintEnd_toEndOf="@id/imageViewColumn1"
+        app:layout_constraintTop_toTopOf="@id/imageViewColumn1"
+        />
+
+    <ImageView
         android:id="@+id/imageViewColumn2"
         android:layout_width="0dp"
         android:layout_height="260dp"
@@ -33,6 +41,14 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toStartOf="@id/imageViewColumn3"
 
+        />
+
+    <ImageView
+        android:id="@+id/imageViewFavourite2"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        app:layout_constraintEnd_toEndOf="@id/imageViewColumn2"
+        app:layout_constraintTop_toTopOf="@id/imageViewColumn2"
         />
 
     <ImageView
@@ -52,6 +68,14 @@
         />
 
     <ImageView
+        android:id="@+id/imageViewFavourite3"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        app:layout_constraintEnd_toEndOf="@id/imageViewColumn3"
+        app:layout_constraintTop_toTopOf="@id/imageViewColumn3"
+        />
+
+    <ImageView
         android:id="@+id/imageViewColumn4"
         android:layout_width="0dp"
         android:layout_height="260dp"
@@ -65,6 +89,14 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toEndOf="@id/imageViewColumn3"
 
+        />
+
+    <ImageView
+        android:id="@+id/imageViewFavourite4"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        app:layout_constraintEnd_toEndOf="@id/imageViewColumn4"
+        app:layout_constraintTop_toTopOf="@id/imageViewColumn4"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

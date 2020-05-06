@@ -50,6 +50,7 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
                     context.getContentResolver().update(Provider.MOVIES_URI, vValues, null, null);
                     ((Home) context).loadMovie(mPage);
                     ((Home) context).loadMovie(++mPage);
+                    Toast.makeText(context, "I dati erano vecchi e sono stati aggiornati.", Toast.LENGTH_SHORT).show();
                     context.unregisterReceiver(this);
                     default:
                     Toast.makeText(context, "App connessa ad internet", Toast.LENGTH_SHORT).show();
