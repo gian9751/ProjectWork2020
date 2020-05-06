@@ -140,6 +140,7 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
                     ContentValues vValues = new ContentValues();
                     vValues.put(PAGE, -1);
                     getContentResolver().update(Provider.MOVIES_URI, vValues, null, null);
+                    Toast.makeText(this, "I dati erano vecchi e sono stati aggiornati.", Toast.LENGTH_SHORT).show();
                 }else{
                     new AlertDialog.Builder(Home.this)
                             .setTitle("No internet connection available")
@@ -337,6 +338,12 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 
         mMenuItem = menu.findItem(R.id.action_search);
+
+        if (mQuery!=null){
+            menu.findItem(R.id.action_search).expandActionView();
+            mSearchView.setQuery(mQuery,false);
+        }
+
 
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
