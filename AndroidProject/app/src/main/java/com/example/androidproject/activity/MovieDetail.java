@@ -20,6 +20,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -45,7 +46,7 @@ import jp.wasabeef.glide.transformations.BlurTransformation;
 
 import static android.os.Build.ID;
 
-public class MovieDetail extends AppCompatActivity {
+public class MovieDetail extends AppCompatActivity{
 
     long mId = -1;
 
@@ -57,6 +58,11 @@ public class MovieDetail extends AppCompatActivity {
 
 
     ViewFlipper mViewFlipper;
+
+    final  static float move = 200;
+    float ratio = 1.0f;
+    int baseDist;
+    float baseRatio;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -236,4 +242,5 @@ public class MovieDetail extends AppCompatActivity {
         else
             return false;
     }
+
 }
