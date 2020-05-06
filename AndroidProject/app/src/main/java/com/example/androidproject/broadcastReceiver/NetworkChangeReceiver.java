@@ -33,11 +33,11 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
                     context.unregisterReceiver(this);
                     break;
                 default:
-                    Toast.makeText(context, "App connessa ad internet", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Internet connected", Toast.LENGTH_SHORT).show();
             }
 
         }else{
-            Toast.makeText(context, "Connessione ad internet persa! ", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Lost internet connection", Toast.LENGTH_SHORT).show();
         }
     }
 }

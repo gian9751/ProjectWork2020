@@ -277,7 +277,7 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
                     Toast.makeText(Home.this,"Caricamento dei film non riuscito: "+ errorMessage, Toast.LENGTH_SHORT).show();
 
                     if (!checkConnection()&&mCase==-1){
-                        showAlert("Please turn on your connection if u want load the next page of movie", "No internet connection available");
+                        showAlert("Please turn on your connection if you want load the next movie page", "No internet connection available");
                         Cursor vCursor = getContentResolver().query(Provider.MOVIES_URI,null,MovieTableHelper.PAGE+"!= -1",null, PAGE + " DESC");
                         vCursor.moveToNext();
                         mPage = vCursor.getInt(vCursor.getColumnIndex(PAGE));

@@ -18,6 +18,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -113,6 +114,7 @@ public class MovieDetail extends AppCompatActivity {
 
                 mTextViewTitle.setText(vTitolo + "");
                 mTextViewPlot.setText(vPlot + "");
+                mTextViewPlot.setMovementMethod(new ScrollingMovementMethod());
                 mReleaseDate.setText(vReleaseDate + "");
                 mUserScore.setText(vUserScore + "/10");
                 getSupportActionBar().setSubtitle(vTitolo);
