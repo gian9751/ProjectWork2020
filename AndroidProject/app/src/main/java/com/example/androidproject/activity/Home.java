@@ -45,6 +45,9 @@ import com.example.androidproject.localdata.MovieTableHelper;
 import com.example.androidproject.localdata.Provider;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import static com.example.androidproject.localdata.MovieTableHelper.LOAD_DATE;
 import static com.example.androidproject.localdata.MovieTableHelper.PAGE;
 
@@ -64,10 +67,9 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
     MenuItem mMenuItem;
     String mQuery;
 
-    int mPage;
+    int mPage = 1;
 
-    //public NetworkChangeReceiver mNetworkReceiver;
-    int mCase = -1;
+    boolean mBroadcastReceiverAttivato = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,12 +116,12 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
     }
 
     private void controlloConnessioneInternet() {
-        if (!checkConnection()&&mCase==-1)
+        if (!checkConnection()&&!mBroadcastReceiverAttivato)
             showAlert("if you want to see more movies, turn on the connection","No internet connection available");
     }
 
     private void controlloDataDeiDati() {
-        if (getContentResolver().query(Provider.MOVIES_URI,null, MovieTableHelper.PAGE+"!= -1",null,null).getCount()!=0&&checkConnection()) {
+        if (getContentResolver().query(Provider.MOVIES_URI,null, MovieTableHelper.PAGE+"!= -1",null,null).getCount()!=0) {
 
             //prendo i record in ordine per page (partendo da page 1)
             Cursor vCursor = getContentResolver().query(Provider.MOVIES_URI,null,MovieTableHelper.PAGE+"!= -1",null, PAGE + " ASC");
@@ -129,14 +131,26 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
 
             long vDiffMillis = vNow - vDataDiCaricamento; // differnza in millisecondi tra la data attuale e la data di caricamento
             if (vDiffMillis >= (1000*60*60*24)) { // se la differenza tra i due è uguale a 24 ore trasformate in millisecondi
-                getContentResolver().delete(Provider.MOVIES_URI, MovieTableHelper.FAVOURITE + "=0", null); // allora resetto il mio database
+                if (checkConnection()) {
+                    getContentResolver().delete(Provider.MOVIES_URI, MovieTableHelper.FAVOURITE + "=0", null); // allora resetto il mio database
 
-                // ora nel mio database sono rimasti solo i film preferiti
-                // per evitare che incasinino la listview li salvo con una page
-                // che non può essere assegnata a nessun gruppo di film, ovvero -1
-                ContentValues vValues = new ContentValues();
-                vValues.put(PAGE, -1);
-                getContentResolver().update(Provider.MOVIES_URI,vValues,null,null);
+                    // ora nel mio database sono rimasti solo i film preferiti
+                    // per evitare che incasinino la listview li salvo con una page
+                    // che non può essere assegnata a nessun gruppo di film, ovvero -1
+                    ContentValues vValues = new ContentValues();
+                    vValues.put(PAGE, -1);
+                    getContentResolver().update(Provider.MOVIES_URI, vValues, null, null);
+                }else{
+                    new AlertDialog.Builder(Home.this)
+                            .setTitle("No internet connection available")
+                            .setMessage("your data is old, as soon as the connection returns we will update your data")
+                            .setPositiveButton("Ok", null)
+                            .show();
+                    NetworkChangeReceiver vNetworkReceiver = new NetworkChangeReceiver(3,mPage);
+                    mBroadcastReceiverAttivato=true;
+                    IntentFilter filter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
+                    this.registerReceiver(vNetworkReceiver,filter);
+                }
 
             }
         }
@@ -153,40 +167,33 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
     }
 
     private void gestioneDellePage() {
-        if (getContentResolver().query(Provider.MOVIES_URI,null,MovieTableHelper.PAGE+"!= -1",null,null).getCount()==0){
+        if (getContentResolver().query(Provider.MOVIES_URI,null,MovieTableHelper.PAGE+"!= -1",null,null).getCount()==0&&!mBroadcastReceiverAttivato){
             if (!checkConnection()){
                 new AlertDialog.Builder(Home.this)
                         .setTitle("No internet connection available")
                         .setMessage("Please turn on your connection to use app")
-
-                        // Specifying a listener allows you to take an action before dismissing the dialog.
-                        // The dialog is automatically dismissed when a dialog button is clicked.
                         .setPositiveButton("open network settings", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 Intent intent=new Intent(Settings.ACTION_NETWORK_OPERATOR_SETTINGS);
                                 startActivity(intent);
                             }
                         })
-
-                        // A null listener allows the button to dismiss the dialog and take no further action.
                         .setNegativeButton("close app", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 onBackPressed();
                             }
                         })
-                        //.setIcon(android.R.drawable.ic_dialog_alert)
                         .show();
 
-                mCase = 1;
-                NetworkChangeReceiver vNetworkReceiver = new NetworkChangeReceiver(mCase);
+                NetworkChangeReceiver vNetworkReceiver = new NetworkChangeReceiver(1,mPage);
+                mBroadcastReceiverAttivato = true;
                 IntentFilter filter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
                 this.registerReceiver(vNetworkReceiver,filter);
 
                 return;
             }
 
-            mPage=1;
             loadMovie(mPage);
             loadMovie(++mPage);
 
@@ -228,18 +235,13 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
         new AlertDialog.Builder(Home.this)
                 .setTitle(aTitle)
                 .setMessage(aMessage)
-                // Specifying a listener allows you to take an action before dismissing the dialog.
-                // The dialog is automatically dismissed when a dialog button is clicked.
                 .setPositiveButton("Open network settings", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         Intent intent=new Intent(Settings.ACTION_NETWORK_OPERATOR_SETTINGS);
                         startActivity(intent);
                     }
                 })
-
-                // A null listener allows the button to dismiss the dialog and take no further action.
                 .setNegativeButton("Close", null)
-                //.setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
     }
 
@@ -276,13 +278,13 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
                 }else{
                     Toast.makeText(Home.this,"Caricamento dei film non riuscito: "+ errorMessage, Toast.LENGTH_SHORT).show();
 
-                    if (!checkConnection()&&mCase==-1){
+                    if (!checkConnection()&&!mBroadcastReceiverAttivato){
                         showAlert("Please turn on your connection if u want load the next page of movie", "No internet connection available");
                         Cursor vCursor = getContentResolver().query(Provider.MOVIES_URI,null,MovieTableHelper.PAGE+"!= -1",null, PAGE + " DESC");
                         vCursor.moveToNext();
                         mPage = vCursor.getInt(vCursor.getColumnIndex(PAGE));
-                        mCase = 2;
-                        NetworkChangeReceiver vNetworkReceiver = new NetworkChangeReceiver(mCase);
+                        NetworkChangeReceiver vNetworkReceiver = new NetworkChangeReceiver(2, mPage);
+                        mBroadcastReceiverAttivato=true;
                         IntentFilter filter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
                         registerReceiver(vNetworkReceiver,filter);
                     }
@@ -411,18 +413,14 @@ public class Home extends AppCompatActivity implements IWebService, LoaderManage
     @Override
     public void unregisterReceiver(BroadcastReceiver receiver) {
         super.unregisterReceiver(receiver);
-        switch (mCase){
-            case 1:
-                mPage = 1;
-                loadMovie(mPage);
-                loadMovie(++mPage);
-                mCase = -1;
-                break;
-            case 2:
-                loadMovie(++mPage);
-                mCase = -1;
-                break;
-        }
+        Cursor vCursor = getContentResolver().query(Provider.MOVIES_URI,null,MovieTableHelper.PAGE+"!= -1",null, PAGE + " DESC");
+        vCursor.moveToNext();
+        if (vCursor.getCount()!=0)
+            mPage = vCursor.getInt(vCursor.getColumnIndex(PAGE));
+        else
+            mPage = 2;
 
+        if (mBroadcastReceiverAttivato)
+            mBroadcastReceiverAttivato=false;
     }
 }
