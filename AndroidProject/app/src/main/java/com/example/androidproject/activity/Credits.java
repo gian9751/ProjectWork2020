@@ -30,10 +30,18 @@ public class Credits extends AppCompatActivity {
     Animation rotateAnimation;
     ImageView mCineWaveLogo;
 
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Inseriti i riconoscimenti di themoviedb in quanto richiesti dalle condizioni d'utilizzo delle API
+    //
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_credits);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         Objects.requireNonNull(mSensorManager).registerListener(mSensorListener, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
                 SensorManager.SENSOR_DELAY_NORMAL);
@@ -81,5 +89,11 @@ public class Credits extends AppCompatActivity {
     protected void onPause() {
         mSensorManager.unregisterListener(mSensorListener);
         super.onPause();
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }
