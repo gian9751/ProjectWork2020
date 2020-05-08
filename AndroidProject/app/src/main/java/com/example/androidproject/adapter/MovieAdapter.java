@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.cursoradapter.widget.CursorAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -103,6 +104,14 @@ public class MovieAdapter extends CursorAdapter {
         mRequestOptions = new RequestOptions();
         mRequestOptions.placeholder(R.drawable.ic_movie_placeholder);
 
+        if (cursor.getInt(cursor.getColumnIndex(MovieTableHelper.FAVOURITE)) == 1) {
+            vViewHolder.mImageFavourite1.setVisibility(View.VISIBLE);
+            vViewHolder.mImageFavourite1.setImageDrawable(context.getDrawable(R.drawable.ic_favourite_whiteborder_24dp));
+        }else{
+            vViewHolder.mImageFavourite1.setImageDrawable(null);
+            vViewHolder.mImageFavourite1.setVisibility(View.GONE);
+        }
+
         Glide
                 .with(context)
                 .setDefaultRequestOptions(mRequestOptions)
@@ -148,6 +157,15 @@ public class MovieAdapter extends CursorAdapter {
         }
 
         cursor.moveToPosition(position + 1);
+
+        if (cursor.getInt(cursor.getColumnIndex(MovieTableHelper.FAVOURITE)) == 1) {
+            vViewHolder.mImageFavourite2.setVisibility(View.VISIBLE);
+            vViewHolder.mImageFavourite2.setImageDrawable(context.getDrawable(R.drawable.ic_favourite_whiteborder_24dp));
+        }else{
+            vViewHolder.mImageFavourite2.setImageDrawable(null);
+            vViewHolder.mImageFavourite2.setVisibility(View.GONE);
+        }
+
 
         Glide
                 .with(context)
@@ -209,6 +227,14 @@ public class MovieAdapter extends CursorAdapter {
         mRequestOptions = new RequestOptions();
         mRequestOptions.placeholder(R.drawable.ic_movie_placeholder);
 
+        if (cursor.getInt(cursor.getColumnIndex(MovieTableHelper.FAVOURITE)) == 1) {
+            vViewHolder.mImageFavourite1.setVisibility(View.VISIBLE);
+            vViewHolder.mImageFavourite1.setImageDrawable(context.getDrawable(R.drawable.ic_favourite_whiteborder_24dp));
+        }else{
+            vViewHolder.mImageFavourite1.setImageDrawable(null);
+            vViewHolder.mImageFavourite1.setVisibility(View.GONE);
+        }
+
         Glide
                 .with(context)
                 .setDefaultRequestOptions(mRequestOptions)
@@ -261,6 +287,14 @@ public class MovieAdapter extends CursorAdapter {
 
         cursor.moveToPosition(position + 1);
 
+        if (cursor.getInt(cursor.getColumnIndex(MovieTableHelper.FAVOURITE)) == 1) {
+            vViewHolder.mImageFavourite2.setVisibility(View.VISIBLE);
+            vViewHolder.mImageFavourite2.setImageDrawable(context.getDrawable(R.drawable.ic_favourite_whiteborder_24dp));
+        }else{
+            vViewHolder.mImageFavourite2.setImageDrawable(null);
+            vViewHolder.mImageFavourite2.setVisibility(View.GONE);
+        }
+
         Glide
                 .with(context)
                 .setDefaultRequestOptions(mRequestOptions)
@@ -310,6 +344,14 @@ public class MovieAdapter extends CursorAdapter {
 
         cursor.moveToPosition(position + 2);
 
+        if (cursor.getInt(cursor.getColumnIndex(MovieTableHelper.FAVOURITE)) == 1) {
+            vViewHolder.mImageFavourite3.setVisibility(View.VISIBLE);
+            vViewHolder.mImageFavourite3.setImageDrawable(context.getDrawable(R.drawable.ic_favourite_whiteborder_24dp));
+        }else{
+            vViewHolder.mImageFavourite3.setImageDrawable(null);
+            vViewHolder.mImageFavourite3.setVisibility(View.GONE);
+        }
+
         Glide
                 .with(context)
                 .setDefaultRequestOptions(mRequestOptions)
@@ -356,6 +398,14 @@ public class MovieAdapter extends CursorAdapter {
 
         cursor.moveToPosition(position + 3);
 
+        if (cursor.getInt(cursor.getColumnIndex(MovieTableHelper.FAVOURITE)) == 1) {
+            vViewHolder.mImageFavourite4.setVisibility(View.VISIBLE);
+            vViewHolder.mImageFavourite4.setImageDrawable(context.getDrawable(R.drawable.ic_favourite_whiteborder_24dp));
+        }else{
+            vViewHolder.mImageFavourite4.setImageDrawable(null);
+            vViewHolder.mImageFavourite4.setVisibility(View.GONE);
+        }
+
         Glide
                 .with(context)
                 .setDefaultRequestOptions(mRequestOptions)
@@ -395,13 +445,20 @@ public class MovieAdapter extends CursorAdapter {
 
     private class ViewHolder {
 
-        ImageView mImage1, mImage2, mImage3, mImage4;
+        ImageView mImage1, mImage2, mImage3, mImage4, mImageFavourite1,
+                mImageFavourite2, mImageFavourite3, mImageFavourite4;
 
         public ViewHolder(View view) {
             mImage1 = view.findViewById(R.id.imageViewColumn1);
             mImage2 = view.findViewById(R.id.imageViewColumn2);
             mImage3 = view.findViewById(R.id.imageViewColumn3);
             mImage4 = view.findViewById(R.id.imageViewColumn4);
+            mImageFavourite1 = view.findViewById(R.id.imageViewFavourite1);
+            mImageFavourite2 = view.findViewById(R.id.imageViewFavourite2);
+            mImageFavourite3 = view.findViewById(R.id.imageViewFavourite3);
+            mImageFavourite4 = view.findViewById(R.id.imageViewFavourite4);
+
+
         }
     }
 
@@ -409,6 +466,5 @@ public class MovieAdapter extends CursorAdapter {
     public interface IMovieAdapter{
         void onListViewItemSelected(boolean aResponse);
     }
-
 
 }

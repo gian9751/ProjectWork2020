@@ -21,6 +21,14 @@
         tools:srcCompat="@drawable/ic_movie_placeholder" />
 
     <ImageView
+        android:id="@+id/imageViewFavourite1"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        app:layout_constraintEnd_toEndOf="@id/imageViewColumn1"
+        app:layout_constraintTop_toTopOf="@id/imageViewColumn1"
+        />
+
+    <ImageView
         android:id="@+id/imageViewColumn2"
         android:layout_width="0dp"
         android:layout_height="280dp"
@@ -32,5 +40,13 @@
         tools:srcCompat="@drawable/ic_movie_placeholder"
         android:focusable="true"
         android:layout_margin="10dp"
+        />
+
+    <ImageView
+        android:id="@+id/imageViewFavourite2"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        app:layout_constraintEnd_toEndOf="@id/imageViewColumn2"
+        app:layout_constraintTop_toTopOf="@id/imageViewColumn2"
         />
 </androidx.constraintlayout.widget.ConstraintLayout>
