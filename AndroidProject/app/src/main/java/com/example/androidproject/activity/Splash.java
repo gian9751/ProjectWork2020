@@ -16,7 +16,7 @@ public class Splash extends AppCompatActivity {
 
     private static final String TAG = Splash.class.getSimpleName();
 
-    private WaveView waveView;
+    private WaveView waveViewFooter, waveViewHeader;
     private static int splashTimeOut = 5000;
 
     ImageView mImageLogo;
@@ -27,13 +27,16 @@ public class Splash extends AppCompatActivity {
         setContentView(R.layout.activity_splashscreen);
         final Intent i = new Intent(Splash.this, Home.class);
 
-        waveView = findViewById(R.id.waveFooter);
-        waveView.addDefaultWaves(2, 1);
+        waveViewFooter = findViewById(R.id.waveFooter);
+        waveViewHeader = findViewById(R.id.waveHeader);
 
+        waveViewFooter.addDefaultWaves(2, 1);
+        waveViewHeader.addDefaultWaves(2, 1);
         mImageLogo = findViewById(R.id.logo);
         
 
-        waveView.startAnimation();
+        waveViewFooter.startAnimation();
+        waveViewHeader.startAnimation();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
