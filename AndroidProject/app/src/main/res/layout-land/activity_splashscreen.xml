@@ -9,7 +9,7 @@
         android:id="@+id/logo"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:src="@drawable/ic_cinewave_logo"
+        android:src="@drawable/ic_cinewave_logo_sd"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginBottom="40dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -55,13 +55,13 @@
         app:layout_constraintStart_toStartOf="@id/waveFooter"
         app:layout_constraintTop_toBottomOf="@id/appName"/>
 
-    <com.scwang.wave.MultiWaveHeader
+
+    <com.example.androidproject.waves.WaveView
         android:id="@+id/waveFooter"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:scaleY="-1"
-        android:alpha="0.8"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHeight_percent="0.5"
+
         />
 </androidx.constraintlayout.widget.ConstraintLayout>
